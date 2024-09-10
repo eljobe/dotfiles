@@ -1,6 +1,7 @@
 # -*-sh-*-
 
-export ZDOTDIR=$HOME/.config/zsh
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export ZDOTDIR=$XDG_CONFIG_HOME/zsh
 
 # TODO(eljobe): Move to some file that only exists at work.
 if [ $(uname) = "Darwin" ]; then
