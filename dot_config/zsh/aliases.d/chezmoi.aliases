@@ -1,0 +1,8 @@
+# -*-sh-*-
+
+# Shortcut for https://chezmoi.io
+alias cz="chezmoi"
+
+# https://chezmoi.io aliases
+# There is a `cz cd` command, but it runs in a subshell.
+alias cdcz="cd $HOME/.local/share/chezmoi"

@@ -1,0 +1,92 @@
+# -*-sh-*-
+
+export DOTDIR=${HOME}/.dotfiles
+
+# USERNAME is set by sudo. But, I don't want snoops to konw who suddid.
+unset USERNAME
+
+CDPATH=.:${HOME}
+if [ -d ${HOME}/dev/github.com ]; then
+  CDPATH=$CDPATH:${HOME}/dev/github.com
+fi
+
+PATH=$PATH:$HOME/bin
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+#################
+##  Anitidote  ##
+#################
+
+# Makes paths ($PATH and $fpath) prettier
+zstyle ':antidote:bundle' use-friendly-names 'yes'
+
+# According to https://getantidote.github.io
+source "${XDG_CONFIG_HOME:-$HOME/.config}/antidote/antidote.zsh"
+
+# initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
+antidote load
+
+
+##########################
+##  User configuration  ##
+##########################
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+export POWERLEVEL9K_CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/p10k/config.zsh"
+[[ ! -f $POWERLEVEL9K_CONFIG_FILE ]] || source $POWERLEVEL9K_CONFIG_FILE
+
+# Load aliases
+source ${ZDOTDIR}/aliases.zsh
+
+# Set some environment variables
+export COLORTERM=truecolor
+export EDITOR='emacsclient -a=""'
+export PAGER='less -FX'
+export HISTCONTROL=ignorespace
+
+##########################
+##   vterm integration  ##
+##########################
+
+if [[ "$INSIDE_EMACS" = "vterm" ]] \
+       && [[ -n ${EMACS_VTERM_PATH} ]] \
+       && [[ -f ${EMACS_VTERM_PATH}/etc/emacs-vterm-zsh.sh ]]; then
+    export TERM="xterm-256color"
+    source ${EMACS_VTERM_PATH}/etc/emacs-vterm-zsh.sh
+
+    find_file() {
+	vterm_cmd find-file "$(realpath "${@:-.}")"
+    }
+
+    say() {
+	vterm_cmd message "%s" "$*"
+    }
+
+    vterm_set_directory() {
+	vterm_cmd update-pwd "$PWD/"
+    }
+
+    autoload -U add-zsh-hook
+    add-zsh-hook -Uz chpwd () { vterm_set_directory }
+fi
+
+###############################
+##   github.com/moovweb/gvm  ##
+###############################
+
+if [ -s "$HOME/.gvm/scripts/gvm" ]; then
+   source "$HOME/.gvm/scripts/gvm"
+   # GVM overrides cd to be able to switch the go version based on
+   # which directory is active. But, it's really slow and makes
+   # navigating around feel sluggish. No thanks.
+   unset -f cd
+fi
+
+export PATH
+export CDPATH

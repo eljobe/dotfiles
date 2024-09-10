@@ -1,0 +1,8 @@
+# Emacs Temporary Files
+*~
+
+# Macintosh Directory Files
+.DS_Store
+
+# Brew Lock Files
+*.lock.json

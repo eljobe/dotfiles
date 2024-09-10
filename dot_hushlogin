@@ -1,0 +1,2 @@
+# The mere existence of this file keeps the login from being noisy.
+# It also supresses the message of the day (a.k.a. motd)

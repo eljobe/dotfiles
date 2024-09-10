@@ -1,0 +1,18 @@
+# -*-sh-*-
+
+# Aliases to make it easier to deal with Brew's bad decision about
+# leaving these directories owned by the user instead of the system.
+# Typical usages is:
+#     $> bropen
+#     $> brew install something
+#     $> brclose
+
+# This one makes all the files in these directories be owned by me
+# during the installation or upgrade of some package with brew.
+alias bropen="sudo chown -R $(whoami) /usr/local/{bin,etc,sbin,share,share/doc}"
+
+# Note, intentionally not recursive. The only thing against which I'm
+# trying to protect is some malicious software writing some file to
+# one of these bin directories early on my path which masks some other
+# version of the binary which I don't want to miss.
+alias brclose="sudo chown root /usr/local/{bin,etc,sbin,share,share/doc}"

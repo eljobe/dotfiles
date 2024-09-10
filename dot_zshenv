@@ -1,0 +1,13 @@
+# -*-sh-*-
+
+export ZDOTDIR=$HOME/.config/zsh
+
+# TODO(eljobe): Move to some file that only exists at work.
+if [ $(uname) = "Darwin" ]; then
+    export MACOSX_DEPLOYMENT_TARGET=$(sw_vers -productVersion)
+    export CGO_LDFLAGS=-Wl,-no_warn_duplicate_libraries
+fi
+
+if [ -f "$HOME/.cargo/env" ]; then
+  source "$HOME/.cargo/env"
+fi

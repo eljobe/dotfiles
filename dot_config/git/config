@@ -1,0 +1,35 @@
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	required = true
+	process = git-lfs filter-process
+[user]
+	useConfigOnly = true
+	name = Pepper Lebeck-Jobe
+	signingkey = 26123C58B85418BF!
+[color]
+	ui = true
+[pull]
+	rebase = false
+[push]
+	default = simple
+[merge]
+	renamelimit = 2500
+[alias]
+	a = add .
+	c = commit
+	co = checkout
+	rv = remote -v
+	auto-sign = config commit.gpgsign true
+	mine = config user.email eljobe@gmail.com
+	work = config user.email pepper@offchainlabs.com
+	fs = !git fetch && git status
+	ls-textfiles = !git ls-files | xargs -If file f | grep ':.*text' | cut -d':' -f1
+	unpushed = diff @{push}.. --name-only
+	subs = submodule update --force --init --recursive
+[github]
+	user = eljobe
+[core]
+	excludesfile = ~/.gitignore_global
+[init]
+	defaultBranch = main

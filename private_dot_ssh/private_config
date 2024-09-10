@@ -1,0 +1,30 @@
+# Include ssh_config
+Include config.d/*
+Include ~/.moredotfiles/pkgs/*/*.ssh_config
+
+Match host *
+  AddKeysToAgent yes
+  ControlMaster auto
+  ControlPath ~/.ssh/sock-%C
+  ControlPersist 1400m
+  SendEnv COLORTERM
+  SendEnv LC_COLORTERM
+  SendEnv LC_USER_COLORTERM
+
+Match host github.com,gh
+  User git
+
+Match host pfeffer.technodabble.com,pf,eth.technodabble.com,eth,192.168.4.3
+  User pepper
+
+Host gh
+  HostName github.com
+
+Host pf
+  Hostname pfeffer.technodabble.com
+
+Host eth
+  Hostname eth.technodabble.com
+
+Host td
+  Hostname ssh.technodabble.com

@@ -1,0 +1,4 @@
+# -*-sh-*-
+
+alias emux="ssh -t eth tmux new -A -s main"
+alias pmux="ssh -t pf tmux new -A -s main"
