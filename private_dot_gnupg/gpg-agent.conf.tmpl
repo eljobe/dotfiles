@@ -1,9 +1,0 @@
-default-cache-ttl 84000
-max-cache-ttl 84000
-enable-ssh-support
-allow-loopback-pinentry
-allow-emacs-pinentry
-
-{{ if eq .chezmoi.os "darwin" }}
-pinentry-program /usr/local/bin/pinentry-mac
-{{ end }}
