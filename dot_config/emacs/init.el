@@ -213,16 +213,6 @@
   :bind (("C-c t" . multi-vterm-next)
 	 ("C-c T" . multi-vterm)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and config pinentry
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package pinentry
-  :ensure t
-  :init
-  (setq epa-pinentry-mode 'loopback)
-  (pinentry-start))
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Use and config markdown-mode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
