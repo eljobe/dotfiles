@@ -48,6 +48,7 @@ source ${ZDOTDIR}/aliases.zsh
 export COLORTERM=truecolor
 export EDITOR='emacsclient -a=""'
 export PAGER='less -FX'
+export HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
 export HISTCONTROL=ignorespace
 
 ##########################
