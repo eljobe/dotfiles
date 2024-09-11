@@ -324,6 +324,11 @@
 ;; Start a emacs buffer server.
 (server-start)
 
+;; Something about the new way emacs is compiled
+;; means that it just hard-codes the exec-path.
+(setq load-path (cons "~/.config/emacs" load-path))
+(load-library "path-fix")
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
