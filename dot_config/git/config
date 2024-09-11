@@ -6,9 +6,13 @@
 [user]
 	useConfigOnly = true
 	name = Pepper Lebeck-Jobe
-	signingkey = 26123C58B85418BF!
+	signingkey = ~/.ssh/sign_rsa
+[commit]
+	gpgsign = true
 [color]
 	ui = true
+[core]
+	excludesfile = ~/.gitignore_global
 [pull]
 	rebase = false
 [push]
@@ -20,7 +24,6 @@
 	c = commit
 	co = checkout
 	rv = remote -v
-	auto-sign = config commit.gpgsign true
 	mine = config user.email eljobe@gmail.com
 	work = config user.email pepper@offchainlabs.com
 	fs = !git fetch && git status
@@ -29,11 +32,11 @@
 	subs = submodule update --force --init --recursive
 [github]
 	user = eljobe
-[core]
-	excludesfile = ~/.gitignore_global
 [init]
 	defaultBranch = main
 [credential "https://github.com"]
 	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = !gh auth git-credential
+[gpg]
+	format = ssh
