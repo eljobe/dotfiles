@@ -10,11 +10,17 @@ Match host *
   SendEnv COLORTERM
   SendEnv LC_COLORTERM
   SendEnv LC_USER_COLORTERM
+  UseKeychain yes
+  IdentityFile ~/.ssh/auth_rsa
 
 Match host github.com,gh
   User git
 
-Match host pfeffer.technodabble.com,pf,eth.technodabble.com,eth,192.168.4.3
+Match host pfeffer.technodabble.com,pf,eth.technodabble.com,eth
+  ForwardAgent yes
+  User pepper
+
+Match host 192.168.4.3
   User pepper
 
 Host gh
