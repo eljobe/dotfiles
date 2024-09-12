@@ -45,10 +45,10 @@ alias gtav='ga test -v ./...'
 # Get my current external ipv4 address.
 alias myip="curl --ipv4 icanhazip.com"
 
-# Source alias files from any packages
-for aliasfile in ${ZDOTDIR}/aliases.d/*aliases; do
+# Source alias files from auxiliarly sources.
+for aliasfile in ${HOME}/.config/aux/zsh/aliases.d/*aliases; do
     if [ -r $aliasfile ]; then
-	. $aliasfile
+	source $aliasfile
     fi
 done
 unset aliasfile
