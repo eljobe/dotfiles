@@ -12,9 +12,6 @@
 #
 alias clean='find . -type f -name "*~" -not -path "*\.snapshot*"'
 
-# https://chezmoi.io aliases
-alias cdcz="cd $HOME/.local/share/chezmoi"
-
 # Turn on auto color for common commands
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
@@ -46,7 +43,7 @@ alias gtav='ga test -v ./...'
 alias myip="curl --ipv4 icanhazip.com"
 
 # Source alias files from auxiliarly sources.
-for aliasfile in ${HOME}/.config/aux/zsh/aliases.d/*aliases; do
+for aliasfile in ${HOME}/.config/{,aux}zsh/aliases.d/*aliases(N); do
     if [ -r $aliasfile ]; then
 	source $aliasfile
     fi
