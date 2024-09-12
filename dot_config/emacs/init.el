@@ -326,7 +326,7 @@
 
 ;; Something about the new way emacs is compiled
 ;; means that it just hard-codes the exec-path.
-(setq load-path (cons "~/.config/emacs" load-path))
+(setq load-path (cons "~/.config/emacs/lisp" load-path))
 (load-library "path-fix")
 
 (custom-set-variables
