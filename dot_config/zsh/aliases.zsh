@@ -43,7 +43,7 @@ alias gtav='ga test -v ./...'
 alias myip="curl --ipv4 icanhazip.com"
 
 # Source alias files from auxiliarly sources.
-for aliasfile in ${HOME}/.config/{,aux}zsh/aliases.d/*aliases(N); do
+for aliasfile in ${HOME}/.config/{,aux/}zsh/aliases.d/*aliases(N); do
     if [ -r $aliasfile ]; then
 	source $aliasfile
     fi
