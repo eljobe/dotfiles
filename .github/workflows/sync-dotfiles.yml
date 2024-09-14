@@ -1,0 +1,58 @@
+name: Sync Dotfiles to Servers
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 */4 * * *'  # Retry every 4 hours
+
+jobs:
+  sync-dotfiles:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+        - name: Tailscale
+          uses: tailscale/github-action@v2
+          with:
+            authkey: ${{ secrets.GH_ACTION_TAILSCALE_AUTH }}
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Sync to Server 1
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.TS_HOST_1 }}
+          username: ${{ secrets.TS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: chezmoi update
+
+      - name: Sync to Server 2
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.TS_HOST_2 }}
+          username: ${{ secrets.TS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: chezmoi update
+
+      - name: Sync to Server 3
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.TS_HOST_3 }}
+          username: ${{ secrets.TS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: chezmoi update
+
+      - name: Sync to Server 4
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.TS_HOST_4a }}
+          username: ${{ secrets.TS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: chezmoi update
