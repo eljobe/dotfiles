@@ -27,34 +27,18 @@ jobs:
         run: |
           tailscale status
 
-      # - name: Sync to Sever 1
-      #   run: |
-      #     ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_1 }} "chezmoi update"
+      - name: Sync to Sever 1
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_1 }} "chezmoi update"
 
-      - name: Sync to Server 1
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.TS_HOST_1 }}
-          username: ${{ secrets.TS_USER }}
-          script: chezmoi update
+      - name: Sync to Sever 2
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_2 }} "chezmoi update"
 
-      - name: Sync to Server 2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.TS_HOST_2 }}
-          username: ${{ secrets.TS_USER }}
-          script: chezmoi update
+      - name: Sync to Sever 3
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_3 }} "chezmoi update"
 
-      - name: Sync to Server 3
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.TS_HOST_3 }}
-          username: ${{ secrets.TS_USER }}
-          script: chezmoi update
-
-      - name: Sync to Server 4
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.TS_HOST_4 }}
-          username: ${{ secrets.TS_USER }}
-          script: chezmoi update
+      - name: Sync to Sever 4
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_4 }} "chezmoi update"
