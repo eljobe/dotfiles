@@ -18,11 +18,10 @@ jobs:
       - name: Tailscale
         uses: tailscale/github-action@v2
         with:
-          args: --ssh
-          hostname: gh-actions
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ghaction
+          version: 1.72.1
 
       - name: Sync to Sever 1
         run: |
