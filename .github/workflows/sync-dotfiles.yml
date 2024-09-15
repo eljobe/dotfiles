@@ -23,6 +23,10 @@ jobs:
           tags: tag:ghaction
           version: 1.72.1
 
+      - name: Show tailscale status
+        run: |
+          tailscale status
+
       - name: Sync to Sever 1
         run: |
           ssh -v ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_1 }} "chezmoi update"
