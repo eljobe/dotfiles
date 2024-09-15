@@ -18,7 +18,8 @@ jobs:
       - name: Tailscale
         uses: tailscale/github-action@v2
         with:
-          authkey: ${{ secrets.GH_ACTION_TAILSCALE_AUTH }}
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ghaction
           args: --ssh
 
