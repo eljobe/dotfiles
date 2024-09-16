@@ -12,14 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Checkout code
+      - name: Checkout ssh utility
         uses: actions/checkout@v4
         with:
           repository: eljobe/tailscale-multi-ssh
-          path: tailscale-multi-ssh
 
       - name: Set up Go
         uses: actions/setup-go@v2
@@ -27,7 +23,7 @@ jobs:
           go-version: '1.23.1'
 
       - name: Build Go binary
-        run: go build -o multi-ssh ./tailscale-multi-ssh
+        run: go build -o multi-ssh
 
       - name: Tailscale
         uses: tailscale/github-action@v2
