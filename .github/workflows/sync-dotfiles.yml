@@ -13,7 +13,21 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          repository: eljobe/tailscale-multi-ssh
+          path: tailscale-multi-ssh
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.23.1'
+
+      - name: Build Go binary
+        run: go build -o multi-ssh ./tailscale-multi-ssh
 
       - name: Tailscale
         uses: tailscale/github-action@v2
@@ -27,18 +41,21 @@ jobs:
         run: |
           tailscale status
 
-      - name: Sync to Sever 1
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_1 }} "chezmoi update"
+      - name: Run Sync Updates
+        run: ./multi-ssh -sshuser=${{ secrets.TS_USER }} -sshcommand="chezmoi update" -tag="tag:chezmoi"
 
-      - name: Sync to Sever 2
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_2 }} "chezmoi update"
+      # - name: Sync to Sever 1
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_1 }} "chezmoi update"
 
-      - name: Sync to Sever 3
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_3 }} "chezmoi update"
+      # - name: Sync to Sever 2
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_2 }} "chezmoi update"
 
-      - name: Sync to Sever 4
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_4 }} "chezmoi update"
+      # - name: Sync to Sever 3
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_3 }} "chezmoi update"
+
+      # - name: Sync to Sever 4
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_4 }} "chezmoi update"
