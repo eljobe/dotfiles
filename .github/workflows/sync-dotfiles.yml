@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 */4 * * *'  # Retry every 4 hours
+    - cron: '0 */1 * * *'  # Retry every hour
 
 jobs:
   sync-dotfiles:
@@ -33,25 +33,5 @@ jobs:
           tags: tag:ghaction
           version: 1.72.1
 
-      - name: Show tailscale status
-        run: |
-          tailscale status
-
       - name: Run Sync Updates
         run: ./multi-ssh -sshuser=${{ secrets.TS_USER }} -sshcommand="chezmoi update" -tag="tag:chezmoi"
-
-      # - name: Sync to Sever 1
-      #   run: |
-      #     ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_1 }} "chezmoi update"
-
-      # - name: Sync to Sever 2
-      #   run: |
-      #     ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_2 }} "chezmoi update"
-
-      # - name: Sync to Sever 3
-      #   run: |
-      #     ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_3 }} "chezmoi update"
-
-      # - name: Sync to Sever 4
-      #   run: |
-      #     ssh -o StrictHostKeyChecking=no ${{ secrets.TS_USER }}@${{ secrets.TS_HOST_4 }} "chezmoi update"
