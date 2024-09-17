@@ -75,17 +75,5 @@ if [[ "$INSIDE_EMACS" = "vterm" ]] \
     add-zsh-hook -Uz chpwd () { vterm_set_directory }
 fi
 
-###############################
-##   github.com/moovweb/gvm  ##
-###############################
-
-if [ -s "$HOME/.gvm/scripts/gvm" ]; then
-   source "$HOME/.gvm/scripts/gvm"
-   # GVM overrides cd to be able to switch the go version based on
-   # which directory is active. But, it's really slow and makes
-   # navigating around feel sluggish. No thanks.
-   unset -f cd
-fi
-
 export PATH
 export CDPATH
