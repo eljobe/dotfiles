@@ -55,6 +55,15 @@ for root in $brewroots; do
     fi
 done
 
+# The llvm bottle in homebrew is where important compilation tools
+# live. Especially clang. Apple's clang is bad at compiling one
+# one of my work projects.
+for root in $brewroots; do
+    if [ -d "$root/opt/llvm/bin" ]; then
+	prepend_path $root/opt/llvm/bin
+    fi
+done
+
 # Cargo is rust's wrapper and package manager.
 if [ -f "$HOME/.cargo/env" ]; then
     prepend_path $HOME/.cargo/bin
