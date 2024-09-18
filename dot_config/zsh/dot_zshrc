@@ -1,9 +1,9 @@
 # -*-sh-*-
 
-export DOTDIR=${HOME}/.dotfiles
-
 # USERNAME is set by sudo. But, I don't want snoops to konw who suddid.
 unset USERNAME
+
+source $XDG_CONFIG_HOME/zsh/paths.zsh
 
 CDPATH=.:${HOME}
 if [ -d ${HOME}/dev/github.com ]; then
@@ -25,7 +25,7 @@ fi
 zstyle ':antidote:bundle' use-friendly-names 'yes'
 
 # According to https://getantidote.github.io
-source "${XDG_CONFIG_HOME:-$HOME/.config}/antidote/antidote.zsh"
+source "$XDG_CONFIG_HOME/antidote/antidote.zsh"
 
 # initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
 antidote load

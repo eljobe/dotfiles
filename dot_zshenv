@@ -9,21 +9,4 @@ if [ $(uname) = "Darwin" ]; then
     export CGO_LDFLAGS=-Wl,-no_warn_duplicate_libraries
 fi
 
-# Cargo is rust's wrapper and package manager.
-if [ -f "$HOME/.cargo/env" ]; then
-    source "$HOME/.cargo/env"
-fi
-
-# Foundry is a bunch of tools for use with ethereum development.
-foundrydir="$XDG_CONFIG_HOME/.foundry"
-if [ -d "$foundrydir" ]; then
-    if [[ ":$PATH:" != *"${foundrydir}/bin"* ]]; then
-	PATH=${PATH+$PATH:}${foundrydir}/bin
-    fi
-fi
-unset foundrydir
-
-# Append my bin directory if it is not on the $PATH.
-if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
-    PATH=${PATH+$PATH:}$HOME/bin;
-fi
+source $XDG_CONFIG_HOME/zsh/paths.zsh
