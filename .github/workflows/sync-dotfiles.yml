@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 */1 * * *'  # Retry every hour
+    - cron: '0 */6 * * *'  # Retry every 6 hours
 
 jobs:
   sync-dotfiles:
