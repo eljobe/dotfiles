@@ -1,5 +1,5 @@
 parent=$(dirname $1) 
-mkdir -p $HOME/dev/gh/$parent
+mkdir -p $HOME/dev/github.com/$parent
 cd $HOME/dev/github.com/$parent
 gh repo clone $1
 cd $HOME/dev/github.com/$1
