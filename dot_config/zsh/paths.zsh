@@ -55,12 +55,17 @@ for root in $brewroots; do
     fi
 done
 
-# The llvm bottle in homebrew is where important compilation tools
-# live. Especially clang. Apple's clang is bad at compiling one
-# one of my work projects.
 for root in $brewroots; do
+    # The llvm bottle in homebrew is where important compilation tools
+    # live. Especially clang. Apple's clang is bad at compiling one
+    # one of my work projects.
     if [ -d "$root/opt/llvm/bin" ]; then
 	prepend_path $root/opt/llvm/bin
+    fi
+    # The QuickTime5 from homebrew needs to override the one from the
+    # system.
+    if [ -d "$root/opt/qt@5/bin" ]; then
+	prepend_path "$root/opt/qt@5/bin"
     fi
 done
 
