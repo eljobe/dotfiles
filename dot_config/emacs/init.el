@@ -202,6 +202,7 @@
   (setq vterm-max-scrollback 4096)
   (add-hook 'vterm-mode-hook
     (lambda ()
+      (display-line-numbers-mode -1)
       (set (make-local-variable 'buffer-face-mode-face) '(:family "MesloLGS NF"))
       (buffer-face-mode t))))
 
@@ -301,7 +302,7 @@
   (global-set-key (kbd "C-c C s")  #'chezmoi-write))
 
 ;; Load my favorite new theme
-(load-theme 'tango-dark t)
+(load-theme 'tango-dark :no-confirm)
 
 ;; Turn on column number mode
 (column-number-mode 1)
@@ -309,11 +310,33 @@
 ;; Turn off the tool-bar
 (tool-bar-mode 0)
 
+;; Turn off the menu bar
+(menu-bar-mode 0)
+
+;; Turn off the scroll-bar
+(scroll-bar-mode 0)
+
+;; Enable the hi-light line mode to hi-light the current line.
+;; (hl-line-mode t)
+
+;; Revert buffers when the underlying file has changed
+(global-auto-revert-mode 1)
+
+;; Revert Dired and other buffers
+(setq global-auto-revert-non-file-buffers t)
+
+;; Add line numbers to every buffer
+(global-display-line-numbers-mode t)
+
 ;; Disable backup~ files.
 (setq make-backup-files nil)
 
 ;; Don't show that splash screen
 (setq inhibit-startup-message t)
+
+;; Move customization variables to a separate file and load it
+(setq custom-file (locate-user-emacs-file "custom-vars.el"))
+(load custom-file 'noerror 'nomessage)
 
 ;; big shell history!
 (setq comint-input-ring-size 500)
@@ -328,17 +351,3 @@
 ;; means that it just hard-codes the exec-path.
 (setq load-path (cons "~/.config/emacs/lisp" load-path))
 (load-library "path-fix")
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(chezmoi yaml-mode rust-mode paradox multi-vterm markdown-mode magit groovy-mode go-mode gnu-elpa-keyring-update diffview crux)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
