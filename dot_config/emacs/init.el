@@ -328,6 +328,15 @@
 ;; Add line numbers to every buffer
 (global-display-line-numbers-mode t)
 
+;; Set up ERC defaults
+;; Note to self invoke with:
+;; C-u 2 M-x erc
+(setq erc-server "irc.technodabble.com"
+      erc-port 6697
+      erc-nick "pepper"
+      erc-use-tls t
+      erc-user-full-name "Pepper")
+
 ;; Disable backup~ files.
 (setq make-backup-files nil)
 

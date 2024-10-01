@@ -154,3 +154,53 @@ cmd-alt-shift-left = ['join-with left', 'mode main']
 cmd-alt-shift-down = ['join-with down', 'mode main']
 cmd-alt-shift-up = ['join-with up', 'mode main']
 cmd-alt-shift-right = ['join-with right', 'mode main']
+
+[[on-window-detected]]
+if.app-id = 'com.tinyspeck.slackmacgap'
+run = "move-node-to-workspace C"
+
+[[on-window-detected]]
+if.app-id = 'net.whatsapp.WhatsApp'
+run = "move-node-to-workspace C"
+
+[[on-window-detected]]
+if.app-id = 'com.hnc.Discord'
+run = "move-node-to-workspace C"
+
+[[on-window-detected]]
+# Google Voice
+if.app-id = 'com.google.Chrome.app.bojjonegeadjcbekpnkhoalecdkdohbo'
+run = "move-node-to-workspace C"
+
+[[on-window-detected]]
+# Google Chat
+if.app-id = 'com.google.Chrome.app.mdpkiolbdkhdjpekfbkbmhigcaggjagi'
+run = "move-node-to-workspace C"
+
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+run = "move-node-to-workspace D"
+
+[[on-window-detected]]
+if.app-id = 'com.linear'
+run = "move-node-to-workspace D"
+
+[[on-window-detected]]
+if.app-id = 'notion.id'
+run = "move-node-to-workspace D"
+
+[[on-window-detected]]
+if.app-id = 'org.gnu.emacs'
+run = "move-node-to-workspace E"
+
+[[on-window-detected]]
+if.app-id = 'com.googlecode.iterm2'
+run = "move-node-to-workspace T"
+
+[[on-window-detected]]
+if.app-id = 'net.kovidgoyal.kitty'
+run = "move-node-to-workspace T"
+
+[[on-window-detected]]
+if.app-id = 'com.microsoft.VSCode'
+run = "move-node-to-workspace V"
