@@ -311,12 +311,9 @@
 
 ;; Set the default font for emacs
 (let ((font-name "JetbrainsMonoNL Nerd Font Mono")
-      (font-size 14))
+      (font-size 16))
   (when (find-font (font-spec :name font-name))
     (set-face-attribute 'default nil :family font-name :height (* font-size 10))))
-
-;; Load my favorite new theme
-(load-theme 'tango-dark :no-confirm)
 
 ;; Turn on column number mode
 (column-number-mode 1)
