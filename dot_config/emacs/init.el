@@ -180,6 +180,14 @@
 (use-package gnu-elpa-keyring-update
   :ensure t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Use and config catppudcin theme
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package catppuccin-theme
+  :ensure t
+  :defer t
+  :init
+  (load-theme 'catppuccin :no-confirm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Use and config diffview
@@ -203,7 +211,7 @@
   (add-hook 'vterm-mode-hook
     (lambda ()
       (display-line-numbers-mode -1)
-      (set (make-local-variable 'buffer-face-mode-face) '(:family "MesloLGS NF"))
+      (set (make-local-variable 'buffer-face-mode-face) '(:family "JetbrainsMonoNL Nerd Font Mono"))
       (buffer-face-mode t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -300,6 +308,12 @@
   :init
   (global-set-key (kbd "C-c C f")  #'chezmoi-find)
   (global-set-key (kbd "C-c C s")  #'chezmoi-write))
+
+;; Set the default font for emacs
+(let ((font-name "JetbrainsMonoNL Nerd Font Mono")
+      (font-size 14))
+  (when (find-font (font-spec :name font-name))
+    (set-face-attribute 'default nil :family font-name :height (* font-size 10))))
 
 ;; Load my favorite new theme
 (load-theme 'tango-dark :no-confirm)
