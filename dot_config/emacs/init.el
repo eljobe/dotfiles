@@ -1,19 +1,3 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Setup load-path with packages
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
-
-;; Bootstrap `use-package'
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(eval-when-compile (require 'use-package))
-(require 'bind-key)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Define System Identificaiton Functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -64,13 +48,6 @@
 (put 'narrow-to-region 'disabled nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define the kill-filename function
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun kill-filename()
- (interactive)
- (kill-new (buffer-file-name)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Deal with nasty whitespace better
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq require-final-newline t)
@@ -83,67 +60,11 @@
 	       (delete-trailing-whitespace)
 	       (message "Deleted Trailing Space."))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define the toggel-print-faces function
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq pepper-print-faces nil)
-(setq default-face-fg (face-foreground 'default))
-(setq default-face-bg (face-background 'default))
-(defun toggle-print-faces()
-  (interactive)
-  (defvar ps-build-face-reference)
-  (cond (pepper-print-faces
-	 (set-face-foreground 'default default-face-fg)
-	 (set-face-background 'default default-face-bg))
-	((not pepper-print-faces)
-	 (set-face-foreground 'default "black")
-	 (set-face-background 'default "white")))
-  (setq ps-build-face-reference "t")
-  (setq pepper-print-faces (not pepper-print-faces)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Make Buffer Names More Useful
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define the pepper-print function
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun pepper-print()
-  (interactive)
-  (toggle-print-faces)
-  (ps-print-buffer-with-faces)
-  (toggle-print-faces))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define the shell-recenter function
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun shell-recenter()
-  (interactive)
-  (local-set-key "" #'(lambda () (interactive) (recenter 2))))
-
-;;;;;;;;;;;;;;;;;
-;; Rails Module
-;;;;;;;;;;;;;;;;;
-(defun try-complete-abbrev (old)
-  (if (expand-abbrev) t nil))
-
-(setq hippie-expand-try-functions-list
-   '(try-complete-abbrev
-     try-complete-file-name
-     try-expand-dabbrev))
-
-;;;;;;;;;;;;;;
-;; java-mode
-;;;;;;;;;;;;;;
-(add-hook 'java-mode-hook (lambda ()
-  (interactive)
-  (defvar c-basic-offset)
-  (defvar indet-tabs-mode)
-  (setq c-basic-offset 2)
-  (setq indet-tabs-mode nil)
-  (setq fill-column 100)))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Set Up Mode Hooks
@@ -157,47 +78,23 @@
 (add-hook 'emacs-lisp-mode-hook
           #'(lambda () (show-paren-mode 1)))
 
-(add-hook 'shell-mode-hook 'shell-recenter)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define keyboard shortcuts
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key [f6]
-		'kill-filename)
-
-(global-set-key [f5]
-		#'(lambda () (interactive) (revert-buffer t t)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set default fill-column to 80
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq fill-column 80)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and config gnu-elpa-keyring-update
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package gnu-elpa-keyring-update
   :ensure t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and config catppudcin theme
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package catppuccin-theme
   :ensure t
   :defer t
   :init
   (load-theme 'catppuccin :no-confirm))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and config diffview
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package diffview
   :ensure t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and config vterm
-;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package vterm
   :ensure t
   :defer t
@@ -214,17 +111,15 @@
       (set (make-local-variable 'buffer-face-mode-face) '(:family "JetbrainsMonoNL Nerd Font Mono"))
       (buffer-face-mode t))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and config multi-vterm
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package multi-vterm
   :ensure t
   :bind (("C-c t" . multi-vterm-next)
 	 ("C-c T" . multi-vterm)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and config markdown-mode
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package bazel
+  :defer t
+  :ensure t)
+
 (use-package markdown-mode
   :ensure t
   :defer t
@@ -233,35 +128,16 @@
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
   (add-hook 'markdown-mode-hook 'elj-keep-trailing-space-hook))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and config yaml-mode
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package yaml-mode
   :ensure t
   :defer t
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and config paradox
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package paradox
-  :ensure t
-  :defer t
-  :init
-  (setq paradox-github-token       "824960c8349032fcf4195ffaf87a6fd98d014fe5"
-        paradox-automatically-star nil))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and configure magit
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package magit
   :ensure t
   :defer t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and configure groovy-mode
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package groovy-mode
   :ensure t
   :defer t
@@ -269,9 +145,6 @@
   (add-to-list 'auto-mode-alist '("\\.groovy\\'" . groovy-mode))
   (add-to-list 'auto-mode-alist '("\\.gradle\\'" . groovy-mode)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and configure go-mode
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package go-mode
   :ensure t
   :defer t
@@ -284,25 +157,16 @@
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use and configure rust-mode
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package rust-mode
   :ensure t
   :defer t
   :config
   (setq rust-format-on-save t))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use the crux package for extensions
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package crux
   :ensure t
   :defer t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use the chezmoi package
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package chezmoi
   :ensure t
   :init
@@ -326,9 +190,6 @@
 
 ;; Turn off the scroll-bar
 (scroll-bar-mode 0)
-
-;; Enable the hi-light line mode to hi-light the current line.
-;; (hl-line-mode t)
 
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode 1)
@@ -357,12 +218,6 @@
 ;; Move customization variables to a separate file and load it
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
-
-;; big shell history!
-(setq comint-input-ring-size 500)
-
-;; Make shell mode hide password prompts
-(setq comint-output-filter-functions '(comint-watch-for-password-prompt))
 
 ;; Start a emacs buffer server.
 (server-start)
