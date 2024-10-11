@@ -136,7 +136,8 @@
 
 (use-package magit
   :ensure t
-  :defer t)
+  :init
+  (setq magit-define-global-key-bindings 'recommended))
 
 (use-package groovy-mode
   :ensure t
