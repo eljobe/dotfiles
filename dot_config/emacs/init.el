@@ -5,6 +5,13 @@
 	       "http://melpa.org/packages/"))
 (package-initialize)
 
+;; Turn off the menu bar
+(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+;; Turn off the tool-bar
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+;; Turn off the scroll-bar
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Define System Identificaiton Functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -189,15 +196,6 @@
 
 ;; Turn on column number mode
 (column-number-mode 1)
-
-;; Turn off the tool-bar
-(tool-bar-mode 0)
-
-;; Turn off the menu bar
-(menu-bar-mode 0)
-
-;; Turn off the scroll-bar
-(scroll-bar-mode 0)
 
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode 1)
