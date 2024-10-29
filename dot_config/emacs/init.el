@@ -83,6 +83,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq fill-column 80)
 
+(use-package windresize
+  :ensure t)
+
 (use-package gnu-elpa-keyring-update
   :ensure t)
 
