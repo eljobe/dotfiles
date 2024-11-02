@@ -48,6 +48,8 @@ key-mapping.preset = 'qwerty'
 # Fallback value (if you omit the key): on-focused-monitor-changed = []
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
+on-focus-changed = ['exec-and-forget $HOME/bin/aero-focus.sh']
+
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
 # Possible values:
 # - Constant:     gaps.outer.top = 8
@@ -167,6 +169,11 @@ cmd-alt-shift-left = ['join-with left', 'mode main']
 cmd-alt-shift-down = ['join-with down', 'mode main']
 cmd-alt-shift-up = ['join-with up', 'mode main']
 cmd-alt-shift-right = ['join-with right', 'mode main']
+
+# 'emacs' mode disables everything so emacs can have all the key bindings
+[mode.emacs.binding]
+# I'm not going to type this so it doesn't matter.
+cmd-alt-shift-semicolon = 'mode emacs'
 
 [[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
