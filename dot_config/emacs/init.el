@@ -1,11 +1,23 @@
 (require 'package)
 (add-to-list 'package-archives '("MELPA" . "http://melpa.org/packages/"))
+
 ;; Ensure that use-package always installs missing packages
+(require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
 ;; All of the emacs-wide stuff to set up from the start.
 (use-package emacs
+  :hook (emacs-lisp-mode . (lambda() (show-paren-mode 1)))
+  :hook (before-save . (lambda()
+			 (when elj-delete-trailing-space
+			   (delete-trailing-whitespace))))
   :init
+  ;; Prepare to deal with trailing spaces.
+  (defvar elj-delete-trailing-space t)
+  (make-variable-buffer-local 'elj-delete-trailing-space)
+  (defun elj-keep-trailing-space-hook()
+    (setq elj-delete-trailing-space nil))
+  ;; Set zsh as my shell
   (setenv "SHELL" "/bin/zsh")
   ;; Turn on syntax colouring in all modes supporting it
   (global-font-lock-mode t)
@@ -24,6 +36,8 @@
   ;; means that it just hard-codes the exec-path.
   (setq load-path (cons "~/.config/emacs/lisp" load-path))
   (load-library "path-fix")
+  ;; Enable a vertical fuzzy command
+  (fido-vertical-mode)
   :config
   (put 'narrow-to-region 'disabled nil)
   ;; Make buffer names more useful
@@ -40,51 +54,56 @@
   (setq global-auto-revert-non-file-buffers t)
   ;; Disable backup~ files.
   (setq make-backup-files nil)
+  ;; Always add a final-newline to files.
+  (setq require-final-newline t)
+  ;; Set up treesitter languages
+  (setq treesit-language-source-alist
+   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+     (cmake "https://github.com/uyha/tree-sitter-cmake")
+     (css "https://github.com/tree-sitter/tree-sitter-css")
+     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+     (go "https://github.com/tree-sitter/tree-sitter-go")
+     (gomod "https://github.com/camdencheek/tree-sitter-gomod")
+     (html "https://github.com/tree-sitter/tree-sitter-html")
+     (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+     (json "https://github.com/tree-sitter/tree-sitter-json")
+     (make "https://github.com/alemuller/tree-sitter-make")
+     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+     (python "https://github.com/tree-sitter/tree-sitter-python")
+     (rust "https://github.com/tree-sitter/tree-sitter-rust")
+     (toml "https://github.com/tree-sitter/tree-sitter-toml")
+     (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+     (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Deal with nasty whitespace better
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq require-final-newline t)
-(defvar elj-delete-trailing-space t)
-(make-variable-buffer-local 'elj-delete-trailing-space)
-(defun elj-keep-trailing-space-hook()
-  (setq elj-delete-trailing-space nil))
-(add-hook 'before-save-hook
-  (lambda () (when elj-delete-trailing-space
-	       (delete-trailing-whitespace))))
-
-(add-hook 'emacs-lisp-mode-hook
-          #'(lambda () (show-paren-mode 1)))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Only non use-package part remainig
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package windresize)
 
 (use-package gnu-elpa-keyring-update)
 
 (use-package catppuccin-theme
-  :defer t
   :init
   (load-theme 'catppuccin :no-confirm))
 
 (use-package diffview)
 
+(use-package eglot
+  :hook (prog-mode . eglot-ensure))
+
 (use-package vterm
-  :defer t
+  :hook (vterm-mode . (lambda ()
+			(display-line-numbers-mode -1)
+			(set (make-local-variable 'buffer-face-mode-face)
+			     '(:family "JetbrainsMonoNL Nerd Font Mono"))
+			(buffer-face-mode t)))
   :config
   (add-to-list 'vterm-eval-cmds '("update-pwd"
 	  (lambda (path)
 	    (setq default-directory path))))
-  (setq vterm-shell "/bin/zsh -l")
-  (setq vterm-kill-buffer-on-exit t)
-  (setq vterm-max-scrollback 20000)
-  (add-hook 'vterm-mode-hook
-    (lambda ()
-      (display-line-numbers-mode -1)
-      (set (make-local-variable 'buffer-face-mode-face) '(:family "JetbrainsMonoNL Nerd Font Mono"))
-      (buffer-face-mode t))))
+  :custom
+  (vterm-shell "/bin/zsh -l")
+  (vterm-kill-buffer-on-exit t)
+  (vterm-max-scrollback 20000))
 
 (use-package multi-vterm
   :bind (("C-c t" . multi-vterm-next)
@@ -93,46 +112,33 @@
 (use-package bazel
   :defer t)
 
-(use-package markdown-mode
-  :defer t
-  :config
-  (setq markdown-command (concat user-emacs-directory "/bin/flavor.rb"))
-  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-  (add-hook 'markdown-mode-hook 'elj-keep-trailing-space-hook))
+(use-package markdown-ts-mode
+  :hook (markdown-mode . elj-keep-trailing-space-hook)
+  :custom
+  (markdown-command (concat user-emacs-directory "/bin/flavor.rb")))
 
-(use-package yaml-mode
-  :defer t
-  :config
-  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
+(use-package yaml-ts-mode
+  :mode "\\.yml\\'")
 
 (use-package magit
   :init
   (setq magit-define-global-key-bindings 'recommended))
 
-(use-package groovy-mode
-  :defer t
-  :init
-  (add-to-list 'auto-mode-alist '("\\.groovy\\'" . groovy-mode))
-  (add-to-list 'auto-mode-alist '("\\.gradle\\'" . groovy-mode)))
-
-(use-package go-mode
-  :defer t
+(use-package go-ts-mode
+  :mode "\\.go\\'"
+  :mode ("go.mod\\'" . go-dot-mod-mode)
   :init
   (defun elj-go-mode-hook()
     (setq tab-width 2))
-  :config
-  (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
-  (add-hook 'go-mode-hook 'elj-go-mode-hook)
-  (setq gofmt-command "goimports")
-  (add-hook 'before-save-hook 'gofmt-before-save))
+  :hook (go-mode . elj-go-mode-hook)
+  :hook (before-save . gofmt-before-save)
+  :custom
+  (gofmt-command "goimports"))
 
-(use-package rust-mode
-  :defer t
-  :config
-  (setq rust-format-on-save t))
-
-(use-package crux
-  :defer t)
+(use-package rust-ts-mode
+  :mode "\\.rs\\'"
+  :custom
+  (rust-format-on-save t))
 
 (use-package chezmoi
   :init
