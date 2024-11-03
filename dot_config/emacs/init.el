@@ -60,7 +60,7 @@
   (setq explicit-zsh-args (append '("-l")))
   ;; Set the default font for emacs
   (let ((font-name "JetbrainsMonoNL Nerd Font Mono")
-	(font-size 16))
+	(font-size 18))
     (when (find-font (font-spec :name font-name))
       (set-face-attribute 'default nil :family font-name :height (* font-size 10))))
   ;; Revert Dired and other buffers
@@ -74,6 +74,7 @@
    '((bash "https://github.com/tree-sitter/tree-sitter-bash")
      (cmake "https://github.com/uyha/tree-sitter-cmake")
      (css "https://github.com/tree-sitter/tree-sitter-css")
+     (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
      (elisp "https://github.com/Wilfred/tree-sitter-elisp")
      (go "https://github.com/tree-sitter/tree-sitter-go")
      (gomod "https://github.com/camdencheek/tree-sitter-gomod")
@@ -143,7 +144,10 @@
   (projectile-mode +1)
   :bind (:map projectile-mode-map
               ("s-p" . projectile-command-map)
-              ("C-c p" . projectile-command-map)))
+              ("C-c p" . projectile-command-map))
+  :custom
+  (projectile-project-search-path '(("~/dev/github.com/" . 2)))
+  (projectile-enable-caching t))
 
 ;; Enable the best completion framework.
 (use-package consult
@@ -180,7 +184,7 @@
 	 ("M-g i" . consult-imenu)
 	 ("M-g I" . consult-imenu-multi)
 	 ;; M-s bindings in `search-map'
-	 ("M-s d" . consult-find)                  ;; Alternative: consult-fd
+	 ("M-s d" . consult-fd)                    ;; Alternative: consult-fd
 	 ("M-s c" . consult-locate)
 	 ("M-s g" . consult-grep)
 	 ("M-s G" . consult-git-grep)
@@ -239,7 +243,30 @@
   ;; Optionally make narrowing help available in the minibuffer.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
   ;; (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help)
-)
+  )
+
+(use-package corfu
+  :custom
+  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto t)                 ;; Enable auto completion
+  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+
+  ;; Enable Corfu only for certain modes. See also `global-corfu-modes'.
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode))
+
+  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
+  ;; be used globally (M-/).  See also the customization variable
+  ;; `global-corfu-modes' to exclude certain modes.
+  :init
+  (global-corfu-mode))
 
 (use-package windresize)
 
@@ -281,6 +308,9 @@
   :custom
   (markdown-command (concat user-emacs-directory "/bin/flavor.rb")))
 
+(use-package dockerfile-ts-mode
+  :mode "Dockerfile\\'")
+
 (use-package yaml-ts-mode
   :mode "\\.yml\\'")
 
@@ -295,12 +325,71 @@
   (defun elj-go-mode-hook()
     (setq tab-width 2))
   :hook (go-mode . elj-go-mode-hook)
-  :hook (before-save . gofmt-before-save))
+  :hook (before-save . gofmt-before-save)
+  :config
+  (put 'go-ts-mode-build-tags 'safe-local-variable #'listp))
 
 (use-package rust-ts-mode
   :mode "\\.rs\\'"
   :custom
   (rust-format-on-save t))
+
+(use-package nerd-icons-corfu)
+
+(use-package nerd-icons
+  :custom
+  ;; The Nerd Font you want to use in GUI
+  (nerd-icons-font-family "JetbrainsMonoNL Nerd Font Mono"))
+
+(use-package nerd-icons-completion
+  :after marginalia
+  :config
+  (nerd-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
+(use-package nerd-icons-dired)
+
+(use-package diff-hl
+  :config
+  (global-diff-hl-mode))
+
+(use-package demap)
+
+(use-package doom-modeline
+  :config
+  (doom-modeline-mode 1)
+  :custom
+  (doom-modeline-hud t)
+  (doom-modeline-buffer-file-name-style 'buffer-name)
+  (doom-modeline-vcs-max-length 21))
+
+(use-package dirvish
+  :init
+  (dirvish-override-dired-mode)
+  :config
+  (setq dirvish-mode-line-format
+        '(:left (sort symlink) :right (omit yank index)))
+  (setq dirvish-mode-line-height 10)
+  (setq dirvish-attributes
+        '(nerd-icons file-time file-size collapse subtree-state vc-state git-msg))
+  (setq dirvish-subtree-state-style 'nerd)
+  (setq dirvish-path-separators (list
+                                 (format "  %s " (nerd-icons-codicon "nf-cod-home"))
+                                 (format "  %s " (nerd-icons-codicon "nf-cod-root_folder"))
+                                 (format " %s " (nerd-icons-faicon "nf-fa-angle_right"))))
+  (setq dired-listing-switches
+        "-l --almost-all --human-readable --group-directories-first --no-group")
+  (dirvish-peek-mode) ; Preview files in minibuffer
+  (dirvish-side-follow-mode))
+
+(use-package copilot
+  :vc (:url "https://github.com/copilot-emacs/copilot.el"
+            :rev :newest
+            :branch "main")
+  :hook (prog-mode copilot-mode)
+  :config
+  (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion))
 
 (use-package chezmoi
   :init
