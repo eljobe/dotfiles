@@ -308,6 +308,9 @@
   :custom
   (markdown-command (concat user-emacs-directory "/bin/flavor.rb")))
 
+(use-package cmake-ts-mode
+  :mode "Makefile\\'")
+
 (use-package dockerfile-ts-mode
   :mode "Dockerfile\\'")
 
@@ -359,7 +362,6 @@
   :config
   (doom-modeline-mode 1)
   :custom
-  (doom-modeline-hud t)
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-vcs-max-length 21))
 
@@ -381,6 +383,12 @@
         "-l --almost-all --human-readable --group-directories-first --no-group")
   (dirvish-peek-mode) ; Preview files in minibuffer
   (dirvish-side-follow-mode))
+
+(use-package kkp
+  :ensure t
+  :config
+  ;; (setq kkp-alt-modifier 'alt) ;; use this if you want to map the Alt keyboard modifier to Alt in Emacs (and not to Meta)
+  (global-kkp-mode +1))
 
 ;; (use-package copilot
 ;;   :vc (:url "https://github.com/copilot-emacs/copilot.el"
