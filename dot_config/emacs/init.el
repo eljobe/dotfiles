@@ -30,7 +30,6 @@
                   (car args))
           (cdr args)))
   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
   ;; Set zsh as my shell
   (setenv "SHELL" "/bin/zsh")
   ;; Something about the new way emacs is compiled
@@ -48,8 +47,6 @@
   (global-auto-revert-mode 1)
   ;; Add line numbers to every buffer
   (global-display-line-numbers-mode t)
-	;; Disable the electric-indent-mode
-	(electric-indent-mode -1)
   ;; Disable narrow-to-region
   (put 'narrow-to-region 'disabled nil)
   ;; Set the default font for emacs
@@ -319,13 +316,17 @@
 
 (use-package catppuccin-theme
   :init
-  (load-theme 'catppuccin :no-confirm))
+  (load-theme 'catppuccin :no-confirm)
+  (set-face-attribute 'font-lock-variable-use-face nil :foreground "#8aadf4" :italic nil)
+  (set-face-attribute 'font-lock-variable-name-face nil :foreground "#ed8796" :italic t))
 
 (use-package diffview)
 
-(use-package eglot
-  :hook (after-save . eglot-format)
-  :hook (prog-mode . eglot-ensure))
+;; (use-package eglot
+;;   :defer t
+;;   :init
+;;   (defun eglot-format-buffer-before-save ()
+;;		(add-hook 'before-save-hook #'eglot-format-buffer -10 t)))
 
 (use-package vterm
   :defines (vterm-eval-cmds)
@@ -367,18 +368,24 @@
   :custom
   (magit-define-global-key-bindings 'recommended))
 
-(use-package go-ts-mode
+(use-package go-mode
+  ;; :commands (eglot-format-buffer)
   :mode "\\.go\\'"
   :mode ("go.mod\\'" . go-dot-mod-mode)
+  ;; :hook (go-ts-mode . eglot-ensure)
+  ;; :hook (go-ts-mode . eglot-format-buffer-before-save)
+	:hook (go-mode . copilot-mode)
+  :init
   :custom
   (tab-width 2)
   :config
-  (put 'go-ts-mode-build-tags 'safe-local-variable #'listp))
+  (put 'go-mode-build-tags 'safe-local-variable #'listp))
 
 (use-package rust-ts-mode
   :mode "\\.rs\\'"
-  :custom
-  (rust-format-on-save t))
+  ;; :hook (rust-ts-mode . eglot-ensure)
+  ;; :hook (rust-ts-mode . eglot-format-buffer-before-save)
+)
 
 (use-package nerd-icons-corfu)
 
@@ -412,29 +419,6 @@
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-vcs-max-length 21))
 
-(use-package dirvish
-  :commands (dirvish-override-dired-mode
-	     dirvish-peek-mode
-	     dirvish-side-follow-mode)
-  :init
-  (dirvish-override-dired-mode)
-  :config
-  (dirvish-peek-mode) ; Preview files in minibuffer
-  (dirvish-side-follow-mode)
-  :custom
-  (dirvish-mode-line-format '(:left (sort symlink) :right (omit yank index)))
-  (dirvish-attributes
-   '(nerd-icons file-time file-size collapse subtree-state vc-state git-msg))
-  (dirvish-mode-line-height 10)
-  (dirvish-subtree-state-style 'nerd)
-  (dirvish-path-separators (list
-                                 (format "  %s " (nerd-icons-codicon "nf-cod-home"))
-                                 (format "  %s " (nerd-icons-codicon "nf-cod-root_folder"))
-                                 (format " %s " (nerd-icons-faicon "nf-fa-angle_right"))))
-  (dired-listing-switches
-        "-l --almost-all --human-readable --group-directories-first --no-group"))
-
-
 (use-package kkp
   :commands (global-kkp-mode)
   :ensure t
@@ -442,14 +426,20 @@
   ;; (setq kkp-alt-modifier 'alt) ;; use this if you want to map the Alt keyboard modifier to Alt in Emacs (and not to Meta)
   (global-kkp-mode +1))
 
-;; (use-package copilot
-;;   :vc (:url "https://github.com/copilot-emacs/copilot.el"
-;;            :rev :newest
-;;            :branch "main")
-;;  :hook (prog-mode copilot-mode)
-;;  :config
-;;  (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-;;  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion))
+(use-package copilot
+   :vc (:url "https://github.com/copilot-emacs/copilot.el"
+            :rev :newest
+            :branch "main")
+   :defines (copilot-completion-map copilot-indentation-alist)
+   :bind (:map copilot-completion-map
+							 ("<tab>" . copilot-accept-completion)
+							 ("TAB" . copilot-accept-completion))
+	 :config
+	 (add-to-list 'copilot-indentation-alist '(prog-mode 2))
+   (add-to-list 'copilot-indentation-alist '(org-mode 2))
+   (add-to-list 'copilot-indentation-alist '(text-mode 2))
+   (add-to-list 'copilot-indentation-alist '(closure-mode 2))
+   (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))
 
 (use-package chezmoi
   :bind ("C-c C f" . chezmoi-find)
