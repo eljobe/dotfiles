@@ -322,11 +322,12 @@
 
 (use-package diffview)
 
-;; (use-package eglot
-;;   :defer t
-;;   :init
-;;   (defun eglot-format-buffer-before-save ()
-;;		(add-hook 'before-save-hook #'eglot-format-buffer -10 t)))
+(use-package eglot
+	:commands (eglot-format-buffer)
+  :defer t
+  :init
+  (defun eglot-format-buffer-before-save ()
+		(add-hook 'before-save-hook #'eglot-format-buffer -10 t)))
 
 (use-package vterm
   :defines (vterm-eval-cmds)
@@ -369,11 +370,10 @@
   (magit-define-global-key-bindings 'recommended))
 
 (use-package go-mode
-  ;; :commands (eglot-format-buffer)
   :mode "\\.go\\'"
   :mode ("go.mod\\'" . go-dot-mod-mode)
-  ;; :hook (go-ts-mode . eglot-ensure)
-  ;; :hook (go-ts-mode . eglot-format-buffer-before-save)
+  :hook (go-ts-mode . eglot-ensure)
+  :hook (go-ts-mode . eglot-format-buffer-before-save)
 	:hook (go-mode . copilot-mode)
   :init
   :custom
@@ -383,8 +383,8 @@
 
 (use-package rust-ts-mode
   :mode "\\.rs\\'"
-  ;; :hook (rust-ts-mode . eglot-ensure)
-  ;; :hook (rust-ts-mode . eglot-format-buffer-before-save)
+  :hook (rust-ts-mode . eglot-ensure)
+  :hook (rust-ts-mode . eglot-format-buffer-before-save)
 )
 
 (use-package nerd-icons-corfu)
