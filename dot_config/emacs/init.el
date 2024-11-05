@@ -12,10 +12,8 @@
 
 ;; All of the emacs-wide stuff to set up from the start.
 (use-package emacs
-  :defines (crm-separator)
+  :defines (crm-separator treesit-language-source-alist)
   :functions (crm-indicator)
-	:bind (:map prog-mode-map
-							("M-q" . fill-paragraph))
   :hook (emacs-lisp-mode . (lambda() (show-paren-mode 1)))
   :hook (minibuffer-setup . cursor-intangible-mode)
   :load-path ("~/.config/emacs/lisp")
@@ -24,8 +22,8 @@
   ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
   (defun crm-indicator (args)
     (cons (format "[CRM%s] %s"
-		  (replace-regexp-in-string
-		   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+      (replace-regexp-in-string
+       "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
                    crm-separator)
                   (car args))
           (cdr args)))
@@ -37,7 +35,26 @@
   (load-library "path-fix")
   ;; Load the custom file emacs manages.
   (load custom-file 'noerror 'nomessage)
-
+  ;; Set up treesitter languages
+  (setq treesit-language-source-alist
+   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+     (cmake "https://github.com/uyha/tree-sitter-cmake")
+     (css "https://github.com/tree-sitter/tree-sitter-css")
+     (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
+     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+     (go "https://github.com/tree-sitter/tree-sitter-go")
+     (gomod "https://github.com/camdencheek/tree-sitter-gomod")
+     (html "https://github.com/tree-sitter/tree-sitter-html")
+     (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+     (json "https://github.com/tree-sitter/tree-sitter-json")
+     (make "https://github.com/alemuller/tree-sitter-make")
+     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+     (python "https://github.com/tree-sitter/tree-sitter-python")
+     (rust "https://github.com/tree-sitter/tree-sitter-rust")
+     (toml "https://github.com/tree-sitter/tree-sitter-toml")
+     (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+     (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
   :config
   ;; Turn on syntax colouring in all modes supporting it
   (global-font-lock-mode t)
@@ -47,11 +64,9 @@
   (global-auto-revert-mode 1)
   ;; Add line numbers to every buffer
   (global-display-line-numbers-mode t)
-  ;; Disable narrow-to-region
-  (put 'narrow-to-region 'disabled nil)
   ;; Set the default font for emacs
   (let ((font-name "JetbrainsMonoNL Nerd Font Mono")
-	(font-size 18))
+  (font-size 18))
     (when (find-font (font-spec :name font-name))
       (set-face-attribute 'default nil :family font-name :height (* font-size 10))))
   ;; Start a emacs buffer server.
@@ -59,10 +74,10 @@
   :custom
   ;; Support opening new minibuffers from inside existing minibuffers.
   (enable-recursive-minibuffers t)
-	;; Let's standardize on 80 columns
-	(fill-column 80)
-	;; Don't add two spaces after a period.
-	(sentence-end-double-space nil)
+  ;; Let's standardize on 80 columns
+  (fill-column 80)
+  ;; Don't add two spaces after a period.
+  (sentence-end-double-space nil)
   ;; Hide commands in M-x which do not work in the current mode.  Vertico
   ;; commands are hidden in normal buffers. This setting is useful beyond
   ;; Vertico.
@@ -82,27 +97,8 @@
   (custom-file (locate-user-emacs-file "custom-vars.el"))
   ;; Always add a final-newline to files.
   (require-final-newline t)
-  ;; Set up treesitter languages
-  (treesit-language-source-alist
-   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-     (cmake "https://github.com/uyha/tree-sitter-cmake")
-     (css "https://github.com/tree-sitter/tree-sitter-css")
-     (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
-     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-     (go "https://github.com/tree-sitter/tree-sitter-go")
-     (gomod "https://github.com/camdencheek/tree-sitter-gomod")
-     (html "https://github.com/tree-sitter/tree-sitter-html")
-     (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-     (json "https://github.com/tree-sitter/tree-sitter-json")
-     (make "https://github.com/alemuller/tree-sitter-make")
-     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-     (python "https://github.com/tree-sitter/tree-sitter-python")
-     (rust "https://github.com/tree-sitter/tree-sitter-rust")
-     (toml "https://github.com/tree-sitter/tree-sitter-toml")
-     (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-     (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-     (yaml "https://github.com/ikatyang/tree-sitter-yaml"))))
-
+  ;; Turn on all the treesit fanciness
+  (treesit-font-lock-level 4))
 
 ;; Enable vertical fuzzy completion in the minibuffer
 (use-package vertico
@@ -172,10 +168,10 @@
 ;; Enable the best completion framework.
 (use-package consult
   :commands (consult-customize
-	     consult-register-format
-	     consult-register-window
-	     consult-xref
-	     projectile-project-root)
+       consult-register-format
+       consult-register-window
+       consult-xref
+       projectile-project-root)
   :preface
   (defvar consult--source-bookmark)
   (defvar consult--source-file-register)
@@ -194,57 +190,57 @@
   (defvar consult-xref)
   ;; Replace bindings. Lazily loaded by `use-package'.
   :bind (;; C-c bindings in `mode-specific-map'
-	 ("C-c M-x" . consult-mode-command)
-	 ("C-c h" . consult-history)
-	 ("C-c k" . consult-kmacro)
-	 ("C-c m" . consult-man)
-	 ("C-c i" . consult-info)
-	 ([remap Info-search] . consult-info)
-	 ;; C-x bindings in `ctl-x-map'
-	 ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-	 ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-	 ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-	 ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-	 ("C-x t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
-	 ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-	 ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
-	 ;; Custom M-# bindings for fast register access
-	 ("M-#" . consult-register-load)
-	 ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-	 ("C-M-#" . consult-register)
-	 ;; Other custom bindings
-	 ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-	 ;; M-g bindings in `goto-map'
-	 ("M-g e" . consult-compile-error)
-	 ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-	 ("M-g g" . consult-goto-line)             ;; orig. goto-line
-	 ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-	 ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-	 ("M-g m" . consult-mark)
-	 ("M-g k" . consult-global-mark)
-	 ("M-g i" . consult-imenu)
-	 ("M-g I" . consult-imenu-multi)
-	 ;; M-s bindings in `search-map'
-	 ("M-s d" . consult-fd)                    ;; Alternative: consult-fd
-	 ("M-s c" . consult-locate)
-	 ("M-s g" . consult-grep)
-	 ("M-s G" . consult-git-grep)
-	 ("M-s r" . consult-ripgrep)
-	 ("M-s l" . consult-line)
-	 ("M-s L" . consult-line-multi)
-	 ("M-s k" . consult-keep-lines)
-	 ("M-s u" . consult-focus-lines)
-	 ;; Isearch integration
-	 ("M-s e" . consult-isearch-history)
-	 :map isearch-mode-map
-	 ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-	 ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-	 ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-	 ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-	 ;; Minibuffer history
-	 :map minibuffer-local-map
-	 ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-	 ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+   ("C-c M-x" . consult-mode-command)
+   ("C-c h" . consult-history)
+   ("C-c k" . consult-kmacro)
+   ("C-c m" . consult-man)
+   ("C-c i" . consult-info)
+   ([remap Info-search] . consult-info)
+   ;; C-x bindings in `ctl-x-map'
+   ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+   ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+   ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+   ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+   ("C-x t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
+   ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+   ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+   ;; Custom M-# bindings for fast register access
+   ("M-#" . consult-register-load)
+   ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+   ("C-M-#" . consult-register)
+   ;; Other custom bindings
+   ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+   ;; M-g bindings in `goto-map'
+   ("M-g e" . consult-compile-error)
+   ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+   ("M-g g" . consult-goto-line)             ;; orig. goto-line
+   ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+   ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+   ("M-g m" . consult-mark)
+   ("M-g k" . consult-global-mark)
+   ("M-g i" . consult-imenu)
+   ("M-g I" . consult-imenu-multi)
+   ;; M-s bindings in `search-map'
+   ("M-s d" . consult-fd)                    ;; Alternative: consult-fd
+   ("M-s c" . consult-locate)
+   ("M-s g" . consult-grep)
+   ("M-s G" . consult-git-grep)
+   ("M-s r" . consult-ripgrep)
+   ("M-s l" . consult-line)
+   ("M-s L" . consult-line-multi)
+   ("M-s k" . consult-keep-lines)
+   ("M-s u" . consult-focus-lines)
+   ;; Isearch integration
+   ("M-s e" . consult-isearch-history)
+   :map isearch-mode-map
+   ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+   ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+   ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+   ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+   ;; Minibuffer history
+   :map minibuffer-local-map
+   ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+   ("M-r" . consult-history))                ;; orig. previous-matching-history-element
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
   :hook (completion-list-mode . consult-preview-at-point-mode)
@@ -253,13 +249,13 @@
   ;; preview for `consult-register', `consult-register-load',
   ;; `consult-register-store' and the Emacs built-ins.
   (setq register-preview-delay 0.5
-	register-preview-function #'consult-register-format)
+  register-preview-function #'consult-register-format)
   ;; Optionally tweak the register preview window.
   ;; This adds thin lines, sorting and hides the mode line of the window.
   (advice-add #'register-preview :override #'consult-register-window)
   ;; Use Consult to select xref locations with preview
   (setq xref-show-xrefs-function #'consult-xref
-	xref-show-definitions-function #'consult-xref)
+  xref-show-definitions-function #'consult-xref)
   (autoload 'projectile-project-root "projectile")
   (setq consult-project-function (lambda (_) (projectile-project-root)))
   :config
@@ -323,23 +319,23 @@
 (use-package diffview)
 
 (use-package eglot
-	:commands (eglot-format-buffer)
+  :commands (eglot-format-buffer)
   :defer t
   :init
   (defun eglot-format-buffer-before-save ()
-		(add-hook 'before-save-hook #'eglot-format-buffer -10 t)))
+    (add-hook 'before-save-hook #'eglot-format-buffer -10 t)))
 
 (use-package vterm
   :defines (vterm-eval-cmds)
   :hook (vterm-mode . (lambda ()
-			(display-line-numbers-mode -1)
-			(set (make-local-variable 'buffer-face-mode-face)
-			     '(:family "JetbrainsMonoNL Nerd Font Mono"))
-			(buffer-face-mode t)))
+      (display-line-numbers-mode -1)
+      (set (make-local-variable 'buffer-face-mode-face)
+           '(:family "JetbrainsMonoNL Nerd Font Mono"))
+      (buffer-face-mode t)))
   :config
   (add-to-list 'vterm-eval-cmds '("update-pwd"
-	  (lambda (path)
-	    (setq default-directory path))))
+    (lambda (path)
+      (setq default-directory path))))
   :custom
   (vterm-shell "/bin/zsh -l")
   (vterm-kill-buffer-on-exit t)
@@ -347,7 +343,7 @@
 
 (use-package multi-vterm
   :bind (("C-c t" . multi-vterm-next)
-	 ("C-c T" . multi-vterm)))
+   ("C-c T" . multi-vterm)))
 
 (use-package bazel
   :defer t)
@@ -369,17 +365,18 @@
   :custom
   (magit-define-global-key-bindings 'recommended))
 
-(use-package go-mode
+(use-package go-ts-mode
   :mode "\\.go\\'"
   :mode ("go.mod\\'" . go-dot-mod-mode)
   :hook (go-ts-mode . eglot-ensure)
   :hook (go-ts-mode . eglot-format-buffer-before-save)
-	:hook (go-mode . copilot-mode)
+  :hook (go-ts-mode . copilot-mode)
   :init
   :custom
   (tab-width 2)
+  (go-ts-mode-indent-offset 2)
   :config
-  (put 'go-mode-build-tags 'safe-local-variable #'listp))
+  (put 'go-ts-mode-build-tags 'safe-local-variable #'listp))
 
 (use-package rust-ts-mode
   :mode "\\.rs\\'"
@@ -397,7 +394,7 @@
 (use-package nerd-icons-completion
   :after marginalia
   :commands (nerd-icons-completion-mode
-	     nerd-icons-completion-marginalia-setup)
+       nerd-icons-completion-marginalia-setup)
   :config
   (nerd-icons-completion-mode)
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
@@ -408,8 +405,6 @@
   :commands (global-diff-hl-mode)
   :config
   (global-diff-hl-mode))
-
-(use-package demap)
 
 (use-package doom-modeline
   :commands (doom-modeline-mode)
@@ -432,10 +427,10 @@
             :branch "main")
    :defines (copilot-completion-map copilot-indentation-alist)
    :bind (:map copilot-completion-map
-							 ("<tab>" . copilot-accept-completion)
-							 ("TAB" . copilot-accept-completion))
-	 :config
-	 (add-to-list 'copilot-indentation-alist '(prog-mode 2))
+               ("<tab>" . copilot-accept-completion)
+               ("TAB" . copilot-accept-completion))
+   :config
+   (add-to-list 'copilot-indentation-alist '(prog-mode 2))
    (add-to-list 'copilot-indentation-alist '(org-mode 2))
    (add-to-list 'copilot-indentation-alist '(text-mode 2))
    (add-to-list 'copilot-indentation-alist '(closure-mode 2))
