@@ -1,3 +1,8 @@
+;;; init.el --- Pepper's Emacs World -*- lexical-binding: t; -*-
+;;; Commentary:
+;;;    This is my own configuration.
+
+;;; Code:
 (require 'package)
 (add-to-list 'package-archives '("MELPA" . "http://melpa.org/packages/"))
 
@@ -7,18 +12,34 @@
 
 ;; All of the emacs-wide stuff to set up from the start.
 (use-package emacs
+  :defines (crm-separator)
+  :functions (crm-indicator)
+	:bind (:map prog-mode-map
+							("M-q" . fill-paragraph))
   :hook (emacs-lisp-mode . (lambda() (show-paren-mode 1)))
-  :hook (before-save . (lambda()
-			 (when elj-delete-trailing-space
-			   (delete-trailing-whitespace))))
+  :hook (minibuffer-setup . cursor-intangible-mode)
+  :load-path ("~/.config/emacs/lisp")
   :init
-  ;; Prepare to deal with trailing spaces.
-  (defvar elj-delete-trailing-space t)
-  (make-variable-buffer-local 'elj-delete-trailing-space)
-  (defun elj-keep-trailing-space-hook()
-    (setq elj-delete-trailing-space nil))
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+		  (replace-regexp-in-string
+		   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
   ;; Set zsh as my shell
   (setenv "SHELL" "/bin/zsh")
+  ;; Something about the new way emacs is compiled
+  ;; means that it just hard-codes the exec-path.
+  (load-library "path-fix")
+  ;; Load the custom file emacs manages.
+  (load custom-file 'noerror 'nomessage)
+
+  :config
   ;; Turn on syntax colouring in all modes supporting it
   (global-font-lock-mode t)
   ;; Turn on column number mode
@@ -27,50 +48,45 @@
   (global-auto-revert-mode 1)
   ;; Add line numbers to every buffer
   (global-display-line-numbers-mode t)
-  ;; Move customization variables to a separate file and load it
-  (setq custom-file (locate-user-emacs-file "custom-vars.el"))
-  (load custom-file 'noerror 'nomessage)
-  ;; Start a emacs buffer server.
-  (server-start)
-  ;; Something about the new way emacs is compiled
-  ;; means that it just hard-codes the exec-path.
-  (setq load-path (cons "~/.config/emacs/lisp" load-path))
-  (load-library "path-fix")
-  ;; Add prompt indicator to `completing-read-multiple'.
-  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-  (defun crm-indicator (args)
-    (cons (format "[CRM%s] %s"
-                  (replace-regexp-in-string
-                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                   crm-separator)
-                  (car args))
-          (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-  :config
+	;; Disable the electric-indent-mode
+	(electric-indent-mode -1)
+  ;; Disable narrow-to-region
   (put 'narrow-to-region 'disabled nil)
-  ;; Make buffer names more useful
-  (setq uniquify-buffer-name-style 'post-forward)
-  (setq fill-column 80)
-  ;; Make zsh a login shell.
-  (setq explicit-zsh-args (append '("-l")))
   ;; Set the default font for emacs
   (let ((font-name "JetbrainsMonoNL Nerd Font Mono")
 	(font-size 18))
     (when (find-font (font-spec :name font-name))
       (set-face-attribute 'default nil :family font-name :height (* font-size 10))))
+  ;; Start a emacs buffer server.
+  (server-start)
+  :custom
+  ;; Support opening new minibuffers from inside existing minibuffers.
+  (enable-recursive-minibuffers t)
+	;; Let's standardize on 80 columns
+	(fill-column 80)
+	;; Don't add two spaces after a period.
+	(sentence-end-double-space nil)
+  ;; Hide commands in M-x which do not work in the current mode.  Vertico
+  ;; commands are hidden in normal buffers. This setting is useful beyond
+  ;; Vertico.
+  (read-extended-command-predicate #'command-completion-default-include-p)
+  ;; Do not allow the cursor in the minibuffer prompt
+  (minibuffer-prompt-properties
+   '(read-only t cursor-intangible t face minibuffer-prompt))
+  ;; Make buffer names more useful
+  (uniquify-buffer-name-style 'post-forward)
+  ;; Make zsh a login shell.
+  (explicit-zsh-args (append '("-l")))
   ;; Revert Dired and other buffers
-  (setq global-auto-revert-non-file-buffers t)
+  (global-auto-revert-non-file-buffers t)
   ;; Disable backup~ files.
-  (setq make-backup-files nil)
+  (make-backup-files nil)
+  ;; Move customization variables to a separate file
+  (custom-file (locate-user-emacs-file "custom-vars.el"))
   ;; Always add a final-newline to files.
-  (setq require-final-newline t)
+  (require-final-newline t)
   ;; Set up treesitter languages
-  (setq treesit-language-source-alist
+  (treesit-language-source-alist
    '((bash "https://github.com/tree-sitter/tree-sitter-bash")
      (cmake "https://github.com/uyha/tree-sitter-cmake")
      (css "https://github.com/tree-sitter/tree-sitter-css")
@@ -88,17 +104,12 @@
      (toml "https://github.com/tree-sitter/tree-sitter-toml")
      (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
      (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
-  :custom
-  ;; Support opening new minibuffers from inside existing minibuffers.
-  (enable-recursive-minibuffers t)
-  ;; Hide commands in M-x which do not work in the current mode.  Vertico
-  ;; commands are hidden in normal buffers. This setting is useful beyond
-  ;; Vertico.
-  (read-extended-command-predicate #'command-completion-default-include-p))
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml"))))
+
 
 ;; Enable vertical fuzzy completion in the minibuffer
 (use-package vertico
+  :commands (vertico-mode)
   :custom
   ;; (vertico-scroll-margin 0) ;; Different scroll margin
   (vertico-count 20) ;; Show more candidates
@@ -130,6 +141,7 @@
 
 ;; Enable rich annotations
 (use-package marginalia
+  :commands (marginalia-mode)
   ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
   ;; available in the *Completions* buffer, add it to the
   ;; `completion-list-mode-map'.
@@ -140,6 +152,9 @@
 
 ;; Enable deep project-specific information
 (use-package projectile
+  :preface
+  :defines (projectile-mode-map)
+  :commands (projectile-mode global-flycheck-mode)
   :init
   (projectile-mode +1)
   :bind (:map projectile-mode-map
@@ -149,8 +164,37 @@
   (projectile-project-search-path '(("~/dev/github.com/" . 2)))
   (projectile-enable-caching t))
 
+;; Install and enable Flycheck
+(use-package flycheck
+  :hook (flycheck-mode . elj-disable-flymake)
+  :init
+  (defun elj-disable-flymake ()
+    (flymake-mode -1))
+  (global-flycheck-mode))
+
 ;; Enable the best completion framework.
 (use-package consult
+  :commands (consult-customize
+	     consult-register-format
+	     consult-register-window
+	     consult-xref
+	     projectile-project-root)
+  :preface
+  (defvar consult--source-bookmark)
+  (defvar consult--source-file-register)
+  (defvar consult--source-recent-file)
+  (defvar consult--source-project-recent-file)
+  (defvar consult-project-function)
+  (defvar xref-show-definitions-function)
+  (defvar xref-show-xrefs-function)
+  (defvar consult-bookmark)
+  (defvar consult-git-grep)
+  (defvar consult-grep)
+  (defvar consult-narrow-key)
+  (defvar consult-recent-file)
+  (defvar consult-ripgrep)
+  (defvar consult-theme)
+  (defvar consult-xref)
   ;; Replace bindings. Lazily loaded by `use-package'.
   :bind (;; C-c bindings in `mode-specific-map'
 	 ("C-c M-x" . consult-mode-command)
@@ -246,6 +290,7 @@
   )
 
 (use-package corfu
+  :commands global-corfu-mode
   :custom
   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
@@ -279,9 +324,11 @@
 (use-package diffview)
 
 (use-package eglot
+  :hook (after-save . eglot-format)
   :hook (prog-mode . eglot-ensure))
 
 (use-package vterm
+  :defines (vterm-eval-cmds)
   :hook (vterm-mode . (lambda ()
 			(display-line-numbers-mode -1)
 			(set (make-local-variable 'buffer-face-mode-face)
@@ -304,7 +351,6 @@
   :defer t)
 
 (use-package markdown-ts-mode
-  :hook (markdown-mode . elj-keep-trailing-space-hook)
   :custom
   (markdown-command (concat user-emacs-directory "/bin/flavor.rb")))
 
@@ -318,17 +364,14 @@
   :mode "\\.yml\\'")
 
 (use-package magit
-  :init
-  (setq magit-define-global-key-bindings 'recommended))
+  :custom
+  (magit-define-global-key-bindings 'recommended))
 
 (use-package go-ts-mode
   :mode "\\.go\\'"
   :mode ("go.mod\\'" . go-dot-mod-mode)
-  :init
-  (defun elj-go-mode-hook()
-    (setq tab-width 2))
-  :hook (go-mode . elj-go-mode-hook)
-  :hook (before-save . gofmt-before-save)
+  :custom
+  (tab-width 2)
   :config
   (put 'go-ts-mode-build-tags 'safe-local-variable #'listp))
 
@@ -346,6 +389,8 @@
 
 (use-package nerd-icons-completion
   :after marginalia
+  :commands (nerd-icons-completion-mode
+	     nerd-icons-completion-marginalia-setup)
   :config
   (nerd-icons-completion-mode)
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
@@ -353,38 +398,45 @@
 (use-package nerd-icons-dired)
 
 (use-package diff-hl
+  :commands (global-diff-hl-mode)
   :config
   (global-diff-hl-mode))
 
 (use-package demap)
 
 (use-package doom-modeline
-  :config
+  :commands (doom-modeline-mode)
+  :init
   (doom-modeline-mode 1)
   :custom
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-vcs-max-length 21))
 
 (use-package dirvish
+  :commands (dirvish-override-dired-mode
+	     dirvish-peek-mode
+	     dirvish-side-follow-mode)
   :init
   (dirvish-override-dired-mode)
   :config
-  (setq dirvish-mode-line-format
-        '(:left (sort symlink) :right (omit yank index)))
-  (setq dirvish-mode-line-height 10)
-  (setq dirvish-attributes
-        '(nerd-icons file-time file-size collapse subtree-state vc-state git-msg))
-  (setq dirvish-subtree-state-style 'nerd)
-  (setq dirvish-path-separators (list
+  (dirvish-peek-mode) ; Preview files in minibuffer
+  (dirvish-side-follow-mode)
+  :custom
+  (dirvish-mode-line-format '(:left (sort symlink) :right (omit yank index)))
+  (dirvish-attributes
+   '(nerd-icons file-time file-size collapse subtree-state vc-state git-msg))
+  (dirvish-mode-line-height 10)
+  (dirvish-subtree-state-style 'nerd)
+  (dirvish-path-separators (list
                                  (format "  %s " (nerd-icons-codicon "nf-cod-home"))
                                  (format "  %s " (nerd-icons-codicon "nf-cod-root_folder"))
                                  (format " %s " (nerd-icons-faicon "nf-fa-angle_right"))))
-  (setq dired-listing-switches
-        "-l --almost-all --human-readable --group-directories-first --no-group")
-  (dirvish-peek-mode) ; Preview files in minibuffer
-  (dirvish-side-follow-mode))
+  (dired-listing-switches
+        "-l --almost-all --human-readable --group-directories-first --no-group"))
+
 
 (use-package kkp
+  :commands (global-kkp-mode)
   :ensure t
   :config
   ;; (setq kkp-alt-modifier 'alt) ;; use this if you want to map the Alt keyboard modifier to Alt in Emacs (and not to Meta)
@@ -400,6 +452,6 @@
 ;;  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion))
 
 (use-package chezmoi
-  :init
-  (global-set-key (kbd "C-c C f")  #'chezmoi-find)
-  (global-set-key (kbd "C-c C s")  #'chezmoi-write))
+  :bind ("C-c C f" . chezmoi-find)
+  :bind ("C-c C s" . chezmoi-write))
+;;; init.el ends here
