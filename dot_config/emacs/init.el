@@ -59,9 +59,9 @@
   ;; Turn on syntax colouring in all modes supporting it
   (global-font-lock-mode t)
   ;; Turn on column number mode
-  (column-number-mode 1)
+  (column-number-mode t)
   ;; Revert buffers when the underlying file has changed
-  (global-auto-revert-mode 1)
+  (global-auto-revert-mode t)
   ;; Add line numbers to every buffer
   (global-display-line-numbers-mode t)
   ;; Set the default font for emacs
@@ -99,6 +99,13 @@
   (require-final-newline t)
   ;; Turn on all the treesit fanciness
   (treesit-font-lock-level 4))
+
+;; Let's not mess around. Grep faster.
+(use-package ripgrep)
+
+(use-package flycheck-projectile
+	:after projectile
+	:defer t)
 
 ;; Enable vertical fuzzy completion in the minibuffer
 (use-package vertico
@@ -149,7 +156,7 @@
   :defines (projectile-mode-map)
   :commands (projectile-mode global-flycheck-mode)
   :init
-  (projectile-mode +1)
+  (projectile-mode t)
   :bind (:map projectile-mode-map
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map))
@@ -402,22 +409,26 @@
 (use-package nerd-icons-dired)
 
 (use-package diff-hl
-  :commands (global-diff-hl-mode)
-  :config
-  (global-diff-hl-mode))
+  :commands (global-diff-hl-mode diff-hl-margin-local-mode)
+	:hook (diff-hl-mode-on . (lambda ()
+														 (unless (window-system)
+															 (diff-hl-margin-local-mode))))
+	:init
+	(global-diff-hl-mode t)
+	:custom
+	(diff-hl-flydiff-mode t))
 
 (use-package doom-modeline
   :commands (doom-modeline-mode)
   :init
-  (doom-modeline-mode 1)
+  (doom-modeline-mode t)
   :custom
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-vcs-max-length 21))
 
 (use-package kkp
   :commands (global-kkp-mode)
-  :ensure t
-  :config
+  :init
   ;; (setq kkp-alt-modifier 'alt) ;; use this if you want to map the Alt keyboard modifier to Alt in Emacs (and not to Meta)
   (global-kkp-mode +1))
 
