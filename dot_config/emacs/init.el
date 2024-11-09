@@ -48,7 +48,6 @@
      (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
      (json "https://github.com/tree-sitter/tree-sitter-json")
      (make "https://github.com/alemuller/tree-sitter-make")
-     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
      (python "https://github.com/tree-sitter/tree-sitter-python")
      (rust "https://github.com/tree-sitter/tree-sitter-rust")
 		 (zig "https://github.com/tree-sitter-grammars/tree-sitter-zig")
@@ -361,9 +360,11 @@
 (use-package bazel
   :defer t)
 
-(use-package markdown-ts-mode
-  :custom
-  (markdown-command (concat user-emacs-directory "/bin/flavor.rb")))
+(use-package markdown-mode
+	:mode ("README\\.md\\'" . gfm-mode)
+	:mode ("LICENSE\\.md\\'" . gfm-mode)
+	:custom
+	(markdown-command (concat user-emacs-directory "/bin/flavor.rb")))
 
 (use-package cmake-ts-mode
   :mode "Makefile\\'")
