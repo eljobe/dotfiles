@@ -1,4 +1,7 @@
-font-family = "JetbrainsMonoNL Nerd Font Mono"
+font-family = ""
+font-family = "Jetbrains Mono"
 font-size = 16
+font-family = "Symbols Nerd Font Mono"
+
 macos-option-as-alt = left
 theme = catppuccin-macchiato

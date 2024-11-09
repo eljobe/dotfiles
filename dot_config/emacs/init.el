@@ -409,8 +409,7 @@
 
 (use-package nerd-icons
   :custom
-  ;; The Nerd Font you want to use in GUI
-  (nerd-icons-font-family "JetbrainsMonoNL Nerd Font Mono"))
+	(nerd-icons-scale-factor 0.9))
 
 (use-package nerd-icons-completion
   :after marginalia
