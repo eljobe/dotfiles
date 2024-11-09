@@ -30,9 +30,6 @@
   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
   ;; Set zsh as my shell
   (setenv "SHELL" "/bin/zsh")
-  ;; Something about the new way emacs is compiled
-  ;; means that it just hard-codes the exec-path.
-  (load-library "path-fix")
   ;; Load the custom file emacs manages.
   (load custom-file 'noerror 'nomessage)
   ;; Set up treesitter languages
@@ -102,6 +99,11 @@
 
 ;; Let's not mess around. Grep faster.
 (use-package ripgrep)
+
+(use-package exec-path-from-shell
+	:commands (exec-path-from-shell-initialize)
+	:init
+	(exec-path-from-shell-initialize))
 
 (use-package flycheck-projectile
 	:after projectile
@@ -402,8 +404,7 @@
 (use-package rust-ts-mode
   :mode "\\.rs\\'"
   :hook (rust-ts-mode . eglot-ensure)
-  :hook (rust-ts-mode . eglot-format-buffer-before-save)
-)
+  :hook (rust-ts-mode . eglot-format-buffer-before-save))
 
 (use-package nerd-icons-corfu)
 
