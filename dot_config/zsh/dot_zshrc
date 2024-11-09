@@ -30,10 +30,12 @@ source "$XDG_CONFIG_HOME/antidote/antidote.zsh"
 # initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
 antidote load
 
-
 ##########################
 ##  User configuration  ##
 ##########################
+
+# Use fzf for completions and other shell activities.
+source <(fzf --zsh)
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 export POWERLEVEL9K_CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/p10k/config.zsh"
