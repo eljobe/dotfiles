@@ -51,6 +51,7 @@
      (markdown "https://github.com/ikatyang/tree-sitter-markdown")
      (python "https://github.com/tree-sitter/tree-sitter-python")
      (rust "https://github.com/tree-sitter/tree-sitter-rust")
+		 (zig "https://github.com/tree-sitter-grammars/tree-sitter-zig")
      (toml "https://github.com/tree-sitter/tree-sitter-toml")
      (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
      (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
@@ -318,8 +319,10 @@
 (use-package gnu-elpa-keyring-update)
 
 (use-package catppuccin-theme
+	:commands (catppuccin-load-flavor)
   :init
   (load-theme 'catppuccin :no-confirm)
+	(catppuccin-load-flavor `macchiato)
   (set-face-attribute 'font-lock-variable-use-face nil :foreground "#8aadf4" :italic nil)
   (set-face-attribute 'font-lock-variable-name-face nil :foreground "#ed8796" :italic t))
 
@@ -330,7 +333,10 @@
   :defer t
   :init
   (defun eglot-format-buffer-before-save ()
-    (add-hook 'before-save-hook #'eglot-format-buffer -10 t)))
+    (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
+	:config
+  (add-to-list 'eglot-server-programs
+               '(zig-ts-mode . ("zls"))))
 
 (use-package vterm
   :defines (vterm-eval-cmds)
@@ -384,6 +390,13 @@
   (go-ts-mode-indent-offset 2)
   :config
   (put 'go-ts-mode-build-tags 'safe-local-variable #'listp))
+
+(use-package zig-mode
+	:mode "\\.zig\\'"
+	:hook (zig-mode . eglot-ensure)
+  :hook (zig-mode . eglot-format-buffer-before-save)
+  :hook (zig-mode . copilot-mode))
+	
 
 (use-package rust-ts-mode
   :mode "\\.rs\\'"
