@@ -1,0 +1,27 @@
+# Used for both active and inactive borders.
+#
+# In my example, the colors are from the Catppucin Macchiato pallete. See:
+# https://catppuccin.com/palette
+colors = [
+"#ed8796ff", # Red
+"#f5a97fff", # Peach
+"#eed49fff", # Yellow
+"#a6da95ff", # Green
+"#7dc4e4ff", # Sapphire
+"#8aadf4ff", # Blue
+"#c6a0f6ff", # Mauve
+]
+
+# Length of animation between one color and the next in seconds.
+# Lower makes the animation faster.
+secs = 2.0
+
+# Frames per second of animation.
+#
+# Higher values make for smoother animations. However, for performance reasons,
+# you should keep this as low as you can to achive the effect you desire. You
+# probably never need to go above 10 even if you have highly contrasting colors.
+fps = 2.0
+
+# The width is visible but not distracting to me.
+width = 10
