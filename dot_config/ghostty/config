@@ -5,3 +5,4 @@ font-family = "Symbols Nerd Font Mono"
 
 macos-option-as-alt = left
 theme = catppuccin-macchiato
+quit-after-last-window-closed = true
