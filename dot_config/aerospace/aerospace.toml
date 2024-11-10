@@ -165,10 +165,10 @@ backspace = ['close-all-windows-but-current', 'mode main']
 # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
 #s = ['layout sticky tiling', 'mode main']
 
-cmd-alt-shift-left = ['join-with left', 'mode main']
-cmd-alt-shift-down = ['join-with down', 'mode main']
-cmd-alt-shift-up = ['join-with up', 'mode main']
-cmd-alt-shift-right = ['join-with right', 'mode main']
+alt-left = ['join-with left', 'mode main']
+alt-down = ['join-with down', 'mode main']
+alt-up = ['join-with up', 'mode main']
+alt-right = ['join-with right', 'mode main']
 
 # 'emacs' mode disables everything so emacs can have all the key bindings
 [mode.emacs.binding]
