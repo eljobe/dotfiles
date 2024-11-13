@@ -109,6 +109,17 @@
 	:after projectile
 	:defer t)
 
+(use-package flycheck-eglot
+	:commands (global-flycheck-eglot-mode)
+  :after (flycheck eglot)
+	:custom (flycheck-eglot-exclusive nil)
+	:defines (flycheck-checkers)
+  :init
+  (global-flycheck-eglot-mode 1))
+
+(use-package flycheck-golangci-lint
+	:after flycheck-eglot)
+
 ;; Enable vertical fuzzy completion in the minibuffer
 (use-package vertico
   :commands (vertico-mode)
@@ -384,9 +395,13 @@
 (use-package go-ts-mode
   :mode "\\.go\\'"
   :mode ("go.mod\\'" . go-dot-mod-mode)
-  :hook (go-ts-mode . eglot-ensure)
+	:functions flycheck-add-next-checker
+	:hook (go-ts-mode . (lambda ()
+												(flycheck-add-next-checker 'eglot-check 'go-gofmt t)))
+	:hook (go-ts-mode . flycheck-golangci-lint-setup)
   :hook (go-ts-mode . eglot-format-buffer-before-save)
   :hook (go-ts-mode . copilot-mode)
+  :hook (go-ts-mode . eglot-ensure)
   :init
   :custom
   (tab-width 2)
@@ -405,6 +420,8 @@
   :mode "\\.rs\\'"
   :hook (rust-ts-mode . eglot-ensure)
   :hook (rust-ts-mode . eglot-format-buffer-before-save))
+
+(use-package solidity-mode)
 
 (use-package nerd-icons-corfu)
 
