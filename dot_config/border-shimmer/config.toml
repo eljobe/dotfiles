@@ -1,5 +1,6 @@
 # Used for both active and inactive borders.
-#
+
+[active]
 # In my example, the colors are from the Catppucin Macchiato pallete. See:
 # https://catppuccin.com/palette
 colors = [
@@ -21,7 +22,10 @@ secs = 0.75
 # Higher values make for smoother animations. However, for performance reasons,
 # you should keep this as low as you can to achive the effect you desire. You
 # probably never need to go above 10 even if you have highly contrasting colors.
-fps = 12.0
+fps = 8.0
 
 # The width is visible but not distracting to me.
 width = 10
+
+# Enable the glow effect.
+glow = true
