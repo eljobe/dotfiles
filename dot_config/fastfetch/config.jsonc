@@ -14,11 +14,11 @@
         }
     },
     "modules": [
-		    {
-				    "type": "title",
-						"color": {
+        {
+            "type": "title",
+            "color": {
                 "user": "red",
-								"at": "cyan",
+								"at": "cyan"
 								"host": "red",
 						},
 				},
