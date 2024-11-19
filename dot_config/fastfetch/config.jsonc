@@ -4,10 +4,8 @@
         "separator": "  ",
     },
     "logo": {
-        "height": 15,
-        "width": 30,
         "padding": {
-            "top": 5,
+            "top": 2,
             "left": 3
         }
     },
