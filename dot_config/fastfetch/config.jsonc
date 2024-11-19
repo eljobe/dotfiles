@@ -1,11 +1,9 @@
 {
     "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
-		"display": {
+    "display": {
         "separator": "  ",
-		},
+    },
     "logo": {
-        "source": "~/.config/fastfetch/xero.png",
-        "type": "kitty",
         "height": 15,
         "width": 30,
         "padding": {
@@ -18,10 +16,10 @@
             "type": "title",
             "color": {
                 "user": "red",
-								"at": "cyan"
-								"host": "red",
-						},
-				},
+                "at": "cyan",
+                "host": "red",
+            },
+        },
         {
             "type": "custom",
             "format": "\u001b[90m┌─────────────────────────── Hardware ───────────────────────────┐"
