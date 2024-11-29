@@ -49,9 +49,9 @@ for root in $brewroots; do
     # brew doctor wants both of them to be on the path in case a new
     # sbin binary gets installed in the current session.
     if [ -d "$root" ]; then
-	# sbin before bin so that bin takes relative precedence.
-	prepend_path $root/sbin
-	prepend_path $root/bin
+				# sbin before bin so that bin takes relative precedence.
+				prepend_path $root/sbin
+				prepend_path $root/bin
     fi
 done
 
@@ -60,12 +60,17 @@ for root in $brewroots; do
     # live. Especially clang. Apple's clang is bad at compiling one
     # one of my work projects.
     if [ -d "$root/opt/llvm/bin" ]; then
-	prepend_path $root/opt/llvm/bin
+				prepend_path $root/opt/llvm/bin
     fi
     # The QuickTime5 from homebrew needs to override the one from the
     # system.
     if [ -d "$root/opt/qt@5/bin" ]; then
-	prepend_path "$root/opt/qt@5/bin"
+				prepend_path "$root/opt/qt@5/bin"
+    fi
+    # The OpenJDK from homebrew needs to override the one from the
+    # system.
+    if [ -d "$root/opt/openjdk/bin" ]; then
+				prepend_path "$root/opt/openjdk/bin"
     fi
 done
 
@@ -77,7 +82,7 @@ fi
 # Foundry is a bunch of tools for use with ethereum development.
 foundrydir="$XDG_CONFIG_HOME/.foundry"
 if [ -d "$foundrydir" ]; then
-    prepend_path $foundrydir/bin
+		prepend_path $foundrydir/bin
 fi
 unset foundrydir
 

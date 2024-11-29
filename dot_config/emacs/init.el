@@ -342,13 +342,14 @@
 
 (use-package eglot
   :commands (eglot-format-buffer)
-  :defer t
   :init
   (defun eglot-format-buffer-before-save ()
     (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
 	:config
   (add-to-list 'eglot-server-programs
                '(zig-ts-mode . ("zls"))))
+
+(use-package dape)
 
 (use-package vterm
   :defines (vterm-eval-cmds)
