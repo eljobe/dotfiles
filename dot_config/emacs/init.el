@@ -95,7 +95,11 @@
   ;; Always add a final-newline to files.
   (require-final-newline t)
   ;; Turn on all the treesit fanciness
-  (treesit-font-lock-level 4))
+  (treesit-font-lock-level 4)
+	;; Initial scratch buffer message
+	(initial-scratch-message
+      ";; -*- lexical-binding: t -*-
+;; Hey, Pepper, you've got this. Let's code up a storm."))
 
 ;; Let's not mess around. Grep faster.
 (use-package ripgrep)
