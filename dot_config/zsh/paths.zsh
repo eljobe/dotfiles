@@ -86,6 +86,18 @@ if [ -d "$foundrydir" ]; then
 fi
 unset foundrydir
 
+# pnmp for managing npm packages
+pnpmdir="$HOME/Library/pnpm"
+if [ -d "$pnpmdir" ]; then
+		prepend_path $pnpmdir
+fi
+
+# uv python package manager
+uvdir="$HOME/.local/bin"
+if [ -d "$uvdir" ]; then
+		prepend_path $uvdir
+fi
+
 # Append my $HOME/bin directory.
 append_path $HOME/bin
 

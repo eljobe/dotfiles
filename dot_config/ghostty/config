@@ -4,5 +4,5 @@ font-size = 16
 font-family = "Symbols Nerd Font Mono"
 
 macos-option-as-alt = left
-theme = catppuccin-macchiato
+theme = Catppuccin Macchiato
 quit-after-last-window-closed = true

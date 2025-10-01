@@ -30,6 +30,8 @@
 	ls-textfiles = !git ls-files | xargs -If file f | grep ':.*text' | cut -d':' -f1
 	unpushed = diff @{push}.. --name-only
 	subs = submodule update --force --init --recursive
+	yamldiff = "!bash -lc 'for f in $(git diff --cached --name-only --diff-filter=ACMRT | grep -E \"\\.ya?ml$\"); do echo \"=== $f ===\"; yamldiff <(git show HEAD:$f 2>/dev/null || echo \"{}\") <(git show :$f); done'"
+	yamldiff-wc = "!bash -lc 'for f in $(git diff --name-only --diff-filter=ACMRT | grep -E \"\\.ya?ml$\"); do echo \"=== $f ===\"; yamldiff <(git show :$f 2>/dev/null || echo \"{}\") \"$f\"; done'"
 [github]
 	user = eljobe
 [init]
