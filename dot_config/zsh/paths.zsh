@@ -60,7 +60,7 @@ for root in $brewroots; do
     # live. Especially clang. Apple's clang is bad at compiling one
     # one of my work projects.
     if [ -d "$root/opt/llvm/bin" ]; then
-				prepend_path $root/opt/llvm/bin
+				prepend_path "$root/opt/llvm/bin"
     fi
     # The QuickTime5 from homebrew needs to override the one from the
     # system.
@@ -96,6 +96,12 @@ fi
 uvdir="$HOME/.local/bin"
 if [ -d "$uvdir" ]; then
 		prepend_path $uvdir
+fi
+
+# On some linux systems go is in /usr/local/go/bin
+godir="/usr/local/go/bin"
+if [ -d "$godir" ]; then
+		prepend_path $godir
 fi
 
 # Append my $HOME/bin directory.
