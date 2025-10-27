@@ -1,4 +1,4 @@
-;;; init.el --- Pepper's Emacs World -*- lexical-binding: t; -*-
+;;; init.el --- Pepper's Emacs World  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;;    This is my own configuration.
 
@@ -62,7 +62,7 @@
   ;; Add line numbers to every buffer
   (global-display-line-numbers-mode t)
   ;; Set the default font for emacs
-  (let ((font-name "JetbrainsMonoNL Nerd Font Mono")
+  (let ((font-name "JetbrainsMono Nerd Font Mono")
   (font-size 18))
     (when (find-font (font-spec :name font-name))
       (set-face-attribute 'default nil :family font-name :height (* font-size 10))))
