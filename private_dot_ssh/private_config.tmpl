@@ -10,9 +10,6 @@ Match host *
   SendEnv COLORTERM
   SendEnv LC_COLORTERM
   SendEnv LC_USER_COLORTERM
-{{- if eq .chezmoi.os "darwin" }}
-  UseKeychain yes
-{{- end }}
   IdentityFile ~/.ssh/auth_rsa
 
 Match host github.com,gh

@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 ;; Don't show that splash screen
 (setq inhibit-startup-message t)
 
