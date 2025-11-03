@@ -9,4 +9,5 @@ CPU=(
 )
 
 sketchybar --add item cpu right \
-           --set cpu "${CPU[@]}" 
+           --set cpu "${CPU[@]}" \
+					 --subscribe cpu mouse.entered mouse.exited
