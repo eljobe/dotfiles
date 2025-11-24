@@ -72,6 +72,15 @@ for root in $brewroots; do
     if [ -d "$root/opt/openjdk/bin" ]; then
 				prepend_path "$root/opt/openjdk/bin"
     fi
+		# The ruby binary from homebrew needs to override the one from
+		# the system.
+		if [ -d "$root/opt/ruby/bin" ]; then
+				prepend_path "$root/opt/ruby/bin"
+		fi
+		# To find cocoapods, that gems bin directory is needed.
+		if [ -d "$root/lib/ruby/gems/3.4.0/gems/cocoapods-1.16.2/bin" ]; then
+				prepend_path "$root/lib/ruby/gems/3.4.0/gems/cocoapods-1.16.2/bin"
+		fi
 done
 
 # Cargo is rust's wrapper and package manager.
