@@ -10,3 +10,25 @@ if [ $(uname) = "Darwin" ]; then
 fi
 
 source $XDG_CONFIG_HOME/zsh/paths.zsh
+
+# Locale: choose a UTF-8 locale available on this system.
+if command -v locale >/dev/null 2>&1; then
+  if command -v rg >/dev/null 2>&1; then
+    _loc_match() { locale -a 2>/dev/null | rg -qi "$1"; }
+  else
+    _loc_match() { locale -a 2>/dev/null | grep -qiE "$1"; }
+  fi
+
+  if _loc_match '^en_US\.UTF-8$'; then
+    export LANG=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
+  elif _loc_match '^en_US\.utf8$'; then
+    export LANG=en_US.utf8
+    export LC_ALL=en_US.utf8
+  elif _loc_match '^C\.UTF-8$'; then
+    export LANG=C.UTF-8
+    export LC_ALL=C.UTF-8
+  fi
+
+  unset -f _loc_match
+fi
