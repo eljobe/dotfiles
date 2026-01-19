@@ -107,10 +107,13 @@ if [ -d "$uvdir" ]; then
 		prepend_path $uvdir
 fi
 
-# On some linux systems go is in /usr/local/go/bin
-godir="/usr/local/go/bin"
-if [ -d "$godir" ]; then
-		prepend_path $godir
+# Add GOPATH/bin if Go is installed.
+if command -v go >/dev/null 2>&1; then
+		gopath="$(go env GOPATH 2>/dev/null)"
+		if [ -n "$gopath" ] && [ -d "$gopath/bin" ]; then
+				prepend_path "$gopath/bin"
+		fi
+		unset gopath
 fi
 
 # Append my $HOME/bin directory.
