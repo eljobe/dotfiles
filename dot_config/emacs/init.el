@@ -197,10 +197,10 @@
        consult-xref
        projectile-project-root)
   :preface
-  (defvar consult--source-bookmark)
-  (defvar consult--source-file-register)
-  (defvar consult--source-recent-file)
-  (defvar consult--source-project-recent-file)
+  (defvar consult-source-bookmark)
+  (defvar consult-source-file-register)
+  (defvar consult-source-recent-file)
+  (defvar consult-source-project-recent-file)
   (defvar consult-project-function)
   (defvar xref-show-definitions-function)
   (defvar xref-show-xrefs-function)
@@ -294,8 +294,8 @@
    consult-theme :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-file-register
-   consult--source-recent-file consult--source-project-recent-file
+   consult-source-bookmark consult-source-file-register
+   consult-source-recent-file consult-source-project-recent-file
    ;; :preview-key "M-."
    :preview-key '(:debounce 0.4 any))
   ;; Optionally configure the narrowing key.
@@ -467,6 +467,47 @@
   :init
   ;; (setq kkp-alt-modifier 'alt) ;; use this if you want to map the Alt keyboard modifier to Alt in Emacs (and not to Meta)
   (global-kkp-mode +1))
+
+(use-package ess
+  :custom
+  (ess-style 'RStudio)
+  ;; ESS process (print all)
+  (ess-eval-visibly-p t)
+  ;; Silence asking for parent directory
+  (ess-ask-for-ess-directory nil)
+  ;; Syntax highlights
+  (ess-R-font-lock-keywords
+    '((ess-R-fl-keyword:keywords . t)
+      (ess-R-fl-keyword:constants . t)
+      (ess-R-fl-keyword:modifiers . t)
+      (ess-R-fl-keyword:fun-defs . t)
+      (ess-R-fl-keyword:assign-ops . t)
+      (ess-R-fl-keyword:%op% . t)
+      (ess-fl-keyword:fun-calls . t)
+      (ess-fl-keyword:numbers . t)
+      (ess-fl-keyword:operators)
+      (ess-fl-keyword:delimiters)
+      (ess-fl-keyword:=)
+      (ess-R-fl-keyword:F&T . t)))
+  :mode
+  (("\\.[rR]" . ess-r-mode)
+   ;; If you also use julia or some other language
+   ("\\.[jJ][lL]" . ess-julia-mode)))
+
+;; R markdown
+(use-package polymode)
+(use-package poly-R)
+(use-package poly-markdown)
+(use-package quarto-mode)
+
+;; MARKDOWN
+(add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
+
+;; R modes
+(add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
+(add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
+(add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
+(add-to-list 'auto-mode-alist '("\\.qmd" . poly-markdown+r-mode))
 
 (use-package copilot
    :vc (:url "https://github.com/copilot-emacs/copilot.el"

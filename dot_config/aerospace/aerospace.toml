@@ -48,7 +48,7 @@ key-mapping.preset = 'qwerty'
 # Fallback value (if you omit the key): on-focused-monitor-changed = []
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
-on-focus-changed = ['exec-and-forget $HOME/bin/aero-focus.sh']
+# on-focus-changed = ['exec-and-forget $HOME/bin/aero-focus.sh']
 
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
 # Possible values:
