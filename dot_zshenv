@@ -11,6 +11,11 @@ fi
 
 source $XDG_CONFIG_HOME/zsh/paths.zsh
 
+# Source private environment variables (not in public dotfiles repo)
+if [ -f "$XDG_CONFIG_HOME/aux/zsh/env.sh" ]; then
+    source "$XDG_CONFIG_HOME/aux/zsh/env.sh"
+fi
+
 # Locale: choose a UTF-8 locale available on this system.
 if command -v locale >/dev/null 2>&1; then
   if command -v rg >/dev/null 2>&1; then
