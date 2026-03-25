@@ -192,6 +192,7 @@
 ;; Enable the best completion framework.
 (use-package consult
   :commands (consult-customize
+			 consult-completion-in-region
        consult-register-format
        consult-register-window
        consult-xref
@@ -283,6 +284,7 @@
   (autoload 'projectile-project-root "projectile")
   (setq consult-project-function (lambda (_) (projectile-project-root)))
   :config
+	(setq completion-in-region-function #'consult-completion-in-region)
   ;; Optionally configure preview. The default value
   ;; is 'any, such that any key triggers the preview.
   ;; (setq consult-preview-key 'any)
@@ -306,29 +308,16 @@
   ;; (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help)
   )
 
-(use-package corfu
-  :commands global-corfu-mode
-  :custom
-  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                 ;; Enable auto completion
-  ;; (corfu-separator ?\s)          ;; Orderless field separator
-  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
-  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
 
-  ;; Enable Corfu only for certain modes. See also `global-corfu-modes'.
-  ;; :hook ((prog-mode . corfu-mode)
-  ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode))
-
-  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
-  ;; be used globally (M-/).  See also the customization variable
-  ;; `global-corfu-modes' to exclude certain modes.
+;; Company uses in-buffer overlays instead of child frames, avoiding
+;; the AeroSpace focus-stealing issue that corfu caused.
+(use-package company
+  :commands (global-company-mode)
   :init
-  (global-corfu-mode))
+  (global-company-mode)
+  :custom
+  (company-idle-delay 0.2)
+  (company-minimum-prefix-length 1))
 
 (use-package windresize)
 
@@ -427,8 +416,6 @@
   :hook (rust-ts-mode . eglot-format-buffer-before-save))
 
 (use-package solidity-mode)
-
-(use-package nerd-icons-corfu)
 
 (use-package nerd-icons
   :custom
