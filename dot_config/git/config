@@ -24,6 +24,7 @@
 	c = commit
 	co = checkout
 	rv = remote -v
+	sw = switch
 	mine = config user.email eljobe@gmail.com
 	work = config user.email pepper@offchainlabs.com
 	fs = !git fetch && git status
