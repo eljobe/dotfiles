@@ -6,3 +6,5 @@
 
 # Brew Lock Files
 *.lock.json
+
+**/.claude/settings.local.json

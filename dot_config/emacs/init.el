@@ -184,6 +184,8 @@
 ;; Install and enable Flycheck
 (use-package flycheck
   :hook (flycheck-mode . elj-disable-flymake)
+  :custom
+  (flycheck-global-modes '(not org-mode))
   :init
   (defun elj-disable-flymake ()
     (flymake-mode -1))
