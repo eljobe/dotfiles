@@ -516,4 +516,17 @@
 (use-package chezmoi
   :bind ("C-c C f" . chezmoi-find)
   :bind ("C-c C s" . chezmoi-write))
+
+(use-package org
+  :ensure nil                           ; built-in; don't fetch from an archive
+  :bind (("C-c c" . org-capture)
+         ("C-c a" . org-agenda))
+  :custom
+  (org-default-notes-file "~/dev/github.com/eljobe/ocl-context/tasks.org")
+  (org-agenda-files '("~/dev/github.com/eljobe/ocl-context/tasks.org"))
+  (org-capture-templates
+   '(("t" "Task" entry (file org-default-notes-file)
+      "* TODO %?\n  %u\n")
+     ("n" "Next action" entry (file org-default-notes-file)
+      "* NEXT %?\n  %u\n"))))
 ;;; init.el ends here
